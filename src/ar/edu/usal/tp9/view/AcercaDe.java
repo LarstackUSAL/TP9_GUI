@@ -14,8 +14,8 @@ public class AcercaDe {
 	private static final int ANCHO_TEXTO = 20; 	
 	private static final FlowLayout ESTILO_LAYOUT = new FlowLayout();
 	private static final String LEYENDA_NOMBRE = "Nombre: ";
-	private static final String LEYENDA_VERSION = "Versión: ";
-	private static final String LEYENDA_ANIO = "Año: ";
+	private static final String LEYENDA_VERSION = "Version: ";
+	private static final String LEYENDA_ANIO = "AÃ±o: ";
 	private static final String LEYENDA_AUTORES = "Autores: ";
 	
 	private JFrame ventana = new JFrame("Acerca de"); 	 
