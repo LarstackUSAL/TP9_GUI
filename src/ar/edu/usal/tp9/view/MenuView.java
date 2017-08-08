@@ -20,7 +20,6 @@ public class MenuView extends JFrame {
 	private static final FlowLayout ESTILO_LAYOUT = new FlowLayout();
 	private MenuController menuController;
 	
-
 	public MenuView(MenuController menuController) {
 
 		super("TP9 - GUI");
@@ -30,9 +29,7 @@ public class MenuView extends JFrame {
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(VENTANA_ANCHO, VENTANA_ALTO);
-		
 		this.setLayout(ESTILO_LAYOUT);
-
 		
 		JMenu sistemasMenu = new JMenu("Sistemas");
 		sistemasMenu.setMnemonic('S');

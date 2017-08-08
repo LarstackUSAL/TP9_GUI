@@ -12,10 +12,6 @@ import ar.edu.usal.tp9.view.MenuView;
 public class MenuController implements ActionListener {
 
 	private MenuView menuView;
-	//	private IngresoController ingresoController;
-	//	private ConsultaActualizacionController consultaActualizacionController;
-	//	private ConsultaMasivaController consultaMasivaController;
-	//	private AcercaDeController acercaDeController;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

@@ -10,24 +10,28 @@ public class PaquetesConEstadias extends Paquetes {
 	public PaquetesConEstadias() {
 		super();
 	}
+	
 	public PaquetesConEstadias(ArrayList<Hoteles> hoteles,
 			boolean esPensionCompleta) {
 		super();
 		this.hoteles = hoteles;
 		this.esPensionCompleta = esPensionCompleta;
 	}
+	
 	public ArrayList<Hoteles> getHoteles() {
 		return hoteles;
 	}
+	
 	public void setHoteles(ArrayList<Hoteles> hoteles) {
 		this.hoteles = hoteles;
 	}
+	
 	public boolean isEsPensionCompleta() {
 		return esPensionCompleta;
 	}
+	
 	public void setEsPensionCompleta(boolean esPensionCompleta) {
 		this.esPensionCompleta = esPensionCompleta;
 	}
-	
-	
+
 }

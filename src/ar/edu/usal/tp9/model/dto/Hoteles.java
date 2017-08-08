@@ -41,5 +41,4 @@ public class Hoteles {
 		this.estrellas = estrellas;
 	}
 	
-	
 }
