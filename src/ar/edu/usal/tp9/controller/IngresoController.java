@@ -66,8 +66,8 @@ public class IngresoController implements ActionListener{
 			
 			if (ingresoView.getComboHorariosIndex() == 1) {
 				ingresoView.getComboModel().removeAllElements();
-				for (int j = 0; j < ConstantsUtils.strHorasMañana.length; j++) {
-					ingresoView.getComboHoras().addItem(ConstantsUtils.strHorasMañana[j]);
+				for (int j = 0; j < ConstantsUtils.strHorasManana.length; j++) {
+					ingresoView.getComboHoras().addItem(ConstantsUtils.strHorasManana[j]);
 				}
 	
 			} else if (ingresoView.getComboHorariosIndex() == 2) {

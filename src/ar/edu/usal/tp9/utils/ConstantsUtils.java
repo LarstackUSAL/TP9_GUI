@@ -12,8 +12,8 @@ public class ConstantsUtils {
 	public static final int ITEMS_MOSTRAR = 5; 	
 	public static final FlowLayout ESTILO_LAYOUT = new FlowLayout();
 	
-	public static final String [] strHorarios = {" ", "Mañana", "Tarde", "Noche"};
-	public static final String [] strHorasMañana = {" ", "0 am", "1 am", "2 am", "3 am", "4 am", "5 am", "6 am", 
+	public static final String [] strHorarios = {" ", "Maï¿½ana", "Tarde", "Noche"};
+	public static final String [] strHorasManana = {" ", "0 am", "1 am", "2 am", "3 am", "4 am", "5 am", "6 am", 
 		"7 am", "8 am", "9 am", "10 am", "11 am"};
 
 	public static final String [] strHorasTarde = {" ", "12 pm", "1 pm", "2 pm", "3 pm", "4 pm", "5 pm", "6 pm"};
