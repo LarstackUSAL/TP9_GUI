@@ -12,7 +12,7 @@ public class Paquetes {
 	private boolean tieneSeguro;
 	private int cantidadPasajeros;
 	private Pasajeros pasajero;
-	private ArrayList<Facturas> facturas;
+	private Facturas factura;
 	private boolean esViajeInternacional;
 	private boolean quiereVisitasGuiadas;
 	private boolean quiereAbonoTransporteLocal;
@@ -93,8 +93,8 @@ public class Paquetes {
 		this.pasajero = pasajero;
 	}
 
-	public ArrayList<Facturas> getFacturas() {
-		return facturas;
+	public Facturas getFacturas() {
+		return factura;
 	}
 
 	public boolean isEsViajeInternacional() {

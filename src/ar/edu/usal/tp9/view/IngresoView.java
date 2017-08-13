@@ -7,6 +7,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,7 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import ar.edu.usal.tp9.controller.IngresoController;
-import ar.edu.usal.tp9.utils.ConstantsUtils;
+import ar.edu.usal.tp9.utils.Constants;
 import ar.edu.usal.tp9.utils.GuiUtilities;
 
 public class IngresoView {
@@ -29,75 +30,77 @@ public class IngresoView {
 	private JLabel lblLocalidades = new JLabel("Localidades: ");
 	private JList listaLocalidadesOriginal;
 	private JScrollPane scrPanelOriginal;
-	private JButton btnAgregar = new JButton("Agregar");
+	private JButton btnAgregar = new JButton("Agregar >>");
+	private JButton btnQuitar = new JButton("<< Quitar");
 	private JList listaLocalidadesCopia;
 	private JScrollPane scrPanelCopia;
 	private DefaultListModel listModel;
 	private JPanel pnlCopia;
 	
 	private JLabel lblFechaSalida = new JLabel("Fecha salida (dd/mm/yyyy): ");
-	private JTextField txtFechaSalida = new JTextField(ConstantsUtils.TEXTO_ANCHO);
+	private JTextField txtFechaSalida = new JTextField(Constants.TEXTO_ANCHO);
 	
 	private JLabel lblHorarioSalida = new JLabel("Horario salida: ");
-	private JComboBox cmbHorarios = new JComboBox(ConstantsUtils.strHorarios);
+	private JComboBox cmbHorarios = new JComboBox(Constants.strHorarios);
 	private JComboBox cmbHoras;
 	private DefaultComboBoxModel comboModel;
 
 	private JLabel lblFechaLlegada = new JLabel("Fecha llegada (dd/mm/yyyy): ");
-	private JTextField txtFechaLlegada = new JTextField(ConstantsUtils.TEXTO_ANCHO);
+	private JTextField txtFechaLlegada = new JTextField(Constants.TEXTO_ANCHO);
 
+	private JComboBox cmbPasajeros;
+	
 	private JLabel lblSeguro = new JLabel("Quiere seguro?: ");
 	private JRadioButton rdbSi;
 	private JRadioButton rdbNo;
 	private JRadioButton rdbOcultoSeguro;
 	private ButtonGroup grpSeguro;
+
+	private JComboBox cmbHoteles;
+	private JCheckBox esPensionCompleta = new JCheckBox("Pension completa");
+	private JCheckBox quiereVisitasGuiadas = new JCheckBox("Requiere guia");
+	private JCheckBox quiereAbonoTransporteLocal = new JCheckBox("Requiere abono transporte");
 	
 	private static final String LEYENDA = "Brindar copia de condiciones y limites del contrato de seguro junto " +
 			"con los datos de contacto ante cualquier emergencia"; 	 
-	private JTextArea leyenda = new JTextArea(LEYENDA, 4, ConstantsUtils.TEXTO_ANCHO);
+	private JTextArea leyenda = new JTextArea(LEYENDA, 4, Constants.TEXTO_ANCHO);
 	
 	private JLabel lblImporte = new JLabel("Importe: ");
-	private JTextField txtImporte = new JTextField(ConstantsUtils.TEXTO_ANCHO);
+	private JTextField txtImporte = new JTextField(Constants.TEXTO_ANCHO);
 	
 	private JButton btnAceptar =  new JButton("Aceptar");
 	private JButton btnCancelar =  new JButton("Cancelar");
 
 	private IngresoController ingresoController;
-	
-	
-//	LA PANTALLA GRÁFICA PARA EL INGRESO DE TODA LA INFORMACIÓN DEBE INCLUIR:
-//	- LISTAS ESTÁTICA Y DINÁMICA CON SELECCIÓN MÚLTIPLE EN AMBAS : JLIST (Se seleccionan las localidades)
-//	- DOS LISTAS DESPLEGABLES, DONDE LA SEGUNDA SEA DEPENDIENTE DE LA PRIMERA : JCOMBOBOX (Horarios de salida, mañana/tarde/noche)
-//	- JCOMBOBOX: Pasajero
-//	- CASILLAS DE VERIFICACIÓN : JCHECKBOX (OPTIONALS)
+
+//	LA PANTALLA GRAFICA PARA EL INGRESO DE TODA LA INFORMACION DEBE INCLUIR:
 //	FALTA ALINEAR LAS VENTANATAS Y LOS MENSAJES EN EL CENTRO
 /*
  * El soft es para una asociacion que organiza viajes. Por lo tanto carga las personas en el jlist para crear el grupo.
  */
-	
-	
+
 	public IngresoView(IngresoController ingresoController) {
 		
 		ingresoController.setView(this);
 		this.ingresoController = ingresoController;
-//		this.listaLocalidadesOriginal = new JList(ingresoController.getLocalidades());
 		
 		GuiUtilities.aplicarFormato(ventana, leyenda, true);
 		
-		ventana.setSize(ConstantsUtils.VENTANA_ANCHO, ConstantsUtils.VENTANA_ALTO);
-		ventana.setLayout(ConstantsUtils.ESTILO_LAYOUT);
+		ventana.setSize(Constants.VENTANA_ANCHO, Constants.VENTANA_ALTO);
+		ventana.setLayout(Constants.ESTILO_LAYOUT);
 		ventana.setLocationRelativeTo(null);
 
-//		Ejemplo para poder correr app, borrar luego y levantar de archivo datos correctos
-		String strCalles[] = {"Santa Fé", "Rivadavia", "Corrientes", "San Juan", "Cordoba", "Belgrano", "Independencia"};
-		this.listaLocalidadesOriginal = new JList(strCalles);
+		this.listaLocalidadesOriginal = new JList(this.ingresoController.getLocalidadesFromTxt());
 		
-		listaLocalidadesOriginal.setVisibleRowCount(ConstantsUtils.ITEMS_MOSTRAR);
+		listaLocalidadesOriginal.setVisibleRowCount(Constants.ITEMS_MOSTRAR);
 		listaLocalidadesOriginal.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.scrPanelOriginal = new JScrollPane(listaLocalidadesOriginal); 
 
 		btnAgregar.setActionCommand("Agregar");
 		btnAgregar.addActionListener(ingresoController);
+		
+		btnQuitar.setActionCommand("Quitar");
+		btnQuitar.addActionListener(ingresoController);
 
 		this.listModel = new DefaultListModel();
 		pnlCopia = new JPanel();
@@ -106,12 +109,11 @@ public class IngresoView {
 		pnlCopia.setForeground(listaLocalidadesOriginal.getForeground());
 		
 		listaLocalidadesCopia = new JList(listModel);
-		listaLocalidadesCopia.setVisibleRowCount(ConstantsUtils.ITEMS_MOSTRAR);
-		listaLocalidadesCopia.setFixedCellWidth(200);	
-		listaLocalidadesCopia.setFixedCellHeight(15);
+		listaLocalidadesCopia.setVisibleRowCount(Constants.ITEMS_MOSTRAR);
+//		listaLocalidadesCopia.setFixedCellWidth(200);
+//		listaLocalidadesCopia.setFixedCellHeight(15);
 		listaLocalidadesCopia.setOpaque(true);
-//		listaLocalidadesCopia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		
+		listaLocalidadesCopia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.scrPanelCopia = new JScrollPane(listaLocalidadesCopia); 
 		pnlCopia.add(listaLocalidadesCopia);
 		
@@ -120,8 +122,10 @@ public class IngresoView {
 		
 		this.comboModel = new DefaultComboBoxModel();
 		cmbHoras = new JComboBox(comboModel);
-		cmbHoras.setMaximumRowCount(ConstantsUtils.ITEMS_MOSTRAR);
-						
+		cmbHoras.setMaximumRowCount(Constants.ITEMS_MOSTRAR);
+
+		cmbPasajeros = new JComboBox(this.ingresoController.getPasajerosFromTxt());
+		
 		rdbSi = new JRadioButton("Si");
 		rdbSi.setMnemonic('S');
 		rdbSi.setActionCommand("Si");
@@ -142,6 +146,8 @@ public class IngresoView {
 		leyenda.setBackground(Color.RED);
 		leyenda.setVisible(false);
 		
+		cmbHoteles = new JComboBox(this.ingresoController.getHotelesFromTxt());
+		
 		txtImporte.setEditable(false);
 		txtImporte.setText(((Double)ingresoController.calcularImporte()).toString());
 		
@@ -151,10 +157,11 @@ public class IngresoView {
 		btnCancelar.setActionCommand("Cancelar");
 		btnCancelar.addActionListener(ingresoController);
 		
-		Component[] componentesArray = {lblLocalidades, scrPanelOriginal, btnAgregar, pnlCopia, scrPanelCopia,  
+		Component[] componentesArray = {cmbPasajeros, lblLocalidades, scrPanelOriginal, btnAgregar, btnQuitar, pnlCopia, scrPanelCopia,  
 				lblHorarioSalida, cmbHorarios, cmbHoras, lblFechaSalida, txtFechaSalida, lblFechaLlegada, 
-				txtFechaLlegada, lblSeguro, rdbOcultoSeguro, rdbSi, rdbNo, leyenda, lblImporte, txtImporte, 
-				btnAceptar, btnCancelar};
+				txtFechaLlegada, lblSeguro, rdbOcultoSeguro, rdbSi, rdbNo, leyenda,
+				quiereAbonoTransporteLocal, quiereVisitasGuiadas, cmbHoteles,
+				esPensionCompleta, lblImporte, txtImporte, btnAceptar, btnCancelar};
 		
 		GuiUtilities.agregarComponentesVentana(ventana, componentesArray);
 		
@@ -214,6 +221,10 @@ public class IngresoView {
 
 	public DefaultComboBoxModel getComboModel() {
 		return comboModel;
+	}
+
+	public JList getListaLocalidadesCopia() {
+		return listaLocalidadesCopia;
 	}
 
 }

@@ -1,0 +1,4 @@
+MAESTRO YODA;19300124;12345679;escribimepadawan@email.com
+DARTH VADER;19420713;12345680;soytupadre@email.com
+LEIA ORGANA;19500101;12345678;hansolonoexistis@email.com
+LUKE SKYWALKER;19710825;12345681;soyunjedimas@email.com

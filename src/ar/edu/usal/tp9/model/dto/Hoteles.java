@@ -1,19 +1,23 @@
 package ar.edu.usal.tp9.model.dto;
 
+import java.util.ArrayList;
+
 public class Hoteles {
 
 	private String nombre;
-	private String localidad;
+	private ArrayList<String> localidades;
 	private int estrellas;
 	
 	public Hoteles() {
 		super();
+		
+		this.localidades = new ArrayList<String>(); 
 	}
 
-	public Hoteles(String nombre, String localidad, int estrellas) {
+	public Hoteles(String nombre, ArrayList<String> localidades, int estrellas) {
 		super();
 		this.nombre = nombre;
-		this.localidad = localidad;
+		this.localidades = localidades;
 		this.estrellas = estrellas;
 	}
 
@@ -25,12 +29,12 @@ public class Hoteles {
 		this.nombre = nombre;
 	}
 
-	public String getLocalidad() {
-		return localidad;
+	public ArrayList<String> getLocalidades() {
+		return localidades;
 	}
 
-	public void setLocalidad(String localidad) {
-		this.localidad = localidad;
+	public void setLocalidades(ArrayList<String> localidades) {
+		this.localidades = localidades;
 	}
 
 	public int getEstrellas() {
