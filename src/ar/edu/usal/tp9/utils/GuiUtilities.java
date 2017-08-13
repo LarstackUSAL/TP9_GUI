@@ -21,13 +21,21 @@ public class GuiUtilities {
 		
 	}
 
+	public static void agregarComponentesVentana(JFrame ventana, Component[] componentesArray) {
+		
+		agregarComponentesVentana(ventana, componentesArray, null);
+	}
+	
 	public static void agregarComponentesVentana(JFrame ventana,
 			Component[] componentesLeyendasArray, JTextArea[] componentesArray) {
 		
-		for (int i = 0; i < componentesArray.length; i++) {
+		for (int i = 0; i < componentesLeyendasArray.length; i++) {
 			
 			ventana.add(componentesLeyendasArray[i]);
-			ventana.add(componentesArray[i]);
+			
+			if(componentesArray != null){
+				ventana.add(componentesArray[i]);	
+			}			
 		}
 	}
 

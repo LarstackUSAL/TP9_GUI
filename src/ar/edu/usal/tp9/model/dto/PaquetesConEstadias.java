@@ -6,7 +6,7 @@ public class PaquetesConEstadias extends Paquetes {
 
 	private ArrayList<Hoteles> hoteles;
 	private boolean esPensionCompleta;
-	
+		
 	public PaquetesConEstadias() {
 		super();
 	}
@@ -15,7 +15,7 @@ public class PaquetesConEstadias extends Paquetes {
 			boolean esPensionCompleta) {
 		super();
 		this.hoteles = hoteles;
-		this.esPensionCompleta = esPensionCompleta;
+		this.esPensionCompleta = esPensionCompleta;		
 	}
 	
 	public ArrayList<Hoteles> getHoteles() {
@@ -33,5 +33,5 @@ public class PaquetesConEstadias extends Paquetes {
 	public void setEsPensionCompleta(boolean esPensionCompleta) {
 		this.esPensionCompleta = esPensionCompleta;
 	}
-
+	
 }

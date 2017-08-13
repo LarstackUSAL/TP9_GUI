@@ -4,17 +4,37 @@ import java.util.Calendar;
 
 public class Facturas {
 
-	private char tipo;
-	private double importe;
-	private int numero;
 	private Calendar fecha;
+	private Pasajeros pasajero;
+	private char tipo;
+	private int numero;
+	private double importe;
 	
-	public Facturas(char tipo, double importe, int numero, Calendar fecha) {
+	public Facturas() {}
+	
+	public Facturas(Calendar fecha, Pasajeros pasajero, char tipo, int numero, double importe) {
 		super();
-		this.tipo = tipo;
-		this.importe = importe;
-		this.numero = numero;
 		this.fecha = fecha;
+		this.pasajero = pasajero;
+		this.tipo = tipo;
+		this.numero = numero;
+		this.importe = importe;		
+	}
+
+	public Calendar getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Calendar fecha) {
+		this.fecha = fecha;
+	}
+
+	public Pasajeros getPasajero() {
+		return pasajero;
+	}
+
+	public void setPasajero(Pasajeros pasajero) {
+		this.pasajero = pasajero;
 	}
 
 	public char getTipo() {
@@ -25,14 +45,6 @@ public class Facturas {
 		this.tipo = tipo;
 	}
 
-	public double getImporte() {
-		return importe;
-	}
-
-	public void setImporte(double importe) {
-		this.importe = importe;
-	}
-
 	public int getNumero() {
 		return numero;
 	}
@@ -41,14 +53,12 @@ public class Facturas {
 		this.numero = numero;
 	}
 
-	public Calendar getFecha() {
-		return fecha;
+	public double getImporte() {
+		return importe;
 	}
 
-	public void setFecha(Calendar fecha) {
-		this.fecha = fecha;
+	public void setImporte(double importe) {
+		this.importe = importe;
 	}
-	
-	
 	
 }

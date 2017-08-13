@@ -1,23 +1,17 @@
 package ar.edu.usal.tp9.view;
 
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import ar.edu.usal.tp9.controller.MenuController;
+import ar.edu.usal.tp9.utils.ConstantsUtils;
 import ar.edu.usal.tp9.utils.GuiUtilities;
 
 
 public class MenuView extends JFrame {
 
-	private static final int VENTANA_ANCHO = 500;
-	private static final int VENTANA_ALTO = 250;
-	private static final FlowLayout ESTILO_LAYOUT = new FlowLayout();
 	private MenuController menuController;
 	
 	public MenuView(MenuController menuController) {
@@ -28,8 +22,8 @@ public class MenuView extends JFrame {
 		this.menuController = menuController;
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(VENTANA_ANCHO, VENTANA_ALTO);
-		this.setLayout(ESTILO_LAYOUT);
+		this.setSize(ConstantsUtils.VENTANA_ANCHO, ConstantsUtils.VENTANA_ALTO);
+		this.setLayout(ConstantsUtils.ESTILO_LAYOUT);
 		
 		JMenu sistemasMenu = new JMenu("Sistemas");
 		sistemasMenu.setMnemonic('S');

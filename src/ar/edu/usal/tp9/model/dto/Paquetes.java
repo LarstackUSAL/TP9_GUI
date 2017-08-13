@@ -5,48 +5,46 @@ import java.util.Calendar;
 
 public class Paquetes {
 
-	private String origen;
-	private String destino;
+	private ArrayList<String> localidades;
 	private Calendar fechaHoraSalida;
 	private Calendar fechaHoraLlegada;
 	private double importe;
 	private boolean tieneSeguro;
 	private int cantidadPasajeros;
-	private ArrayList<Pasajeros> pasajeros;
-	private Facturas factura;
+	private Pasajeros pasajero;
+	private ArrayList<Facturas> facturas;
+	private boolean esViajeInternacional;
+	private boolean quiereVisitasGuiadas;
+	private boolean quiereAbonoTransporteLocal;
 	
 	public Paquetes(){}
 	
-	public Paquetes(String origen, String destino, Calendar fechaHoraSalida,
+	public Paquetes(ArrayList<String> localidades, Calendar fechaHoraSalida,
 			Calendar fechaHoraLlegada, double importe, boolean tieneSeguro,
-			int cantidadPasajeros, ArrayList<Pasajeros> pasajeros) {
+			int cantidadPasajeros, Pasajeros pasajero, boolean esViajeInternacional, 
+			boolean quiereVisitasGuiadas, boolean quiereAbonoTransporteLocal) {
 		super();
-		this.origen = origen;
-		this.destino = destino;
+		this.localidades = localidades;
 		this.fechaHoraSalida = fechaHoraSalida;
 		this.fechaHoraLlegada = fechaHoraLlegada;
 		this.importe = importe;
 		this.tieneSeguro = tieneSeguro;
 		this.cantidadPasajeros = cantidadPasajeros;
-		this.pasajeros = pasajeros;
+		this.pasajero = pasajero;
+		this.esViajeInternacional = esViajeInternacional;
+		this.quiereVisitasGuiadas = quiereVisitasGuiadas;
+		this.quiereAbonoTransporteLocal = quiereAbonoTransporteLocal;
+		
 	}
 
-	public String getOrigen() {
-		return origen;
+	public ArrayList<String> getLocalidades() {
+		return localidades;
 	}
 
-	public void setOrigen(String origen) {
-		this.origen = origen;
+	public void setLocalidades(ArrayList<String> localidades) {
+		this.localidades = localidades;
 	}
-
-	public String getDestino() {
-		return destino;
-	}
-
-	public void setDestino(String destino) {
-		this.destino = destino;
-	}
-
+	
 	public Calendar getFechaHoraSalida() {
 		return fechaHoraSalida;
 	}
@@ -87,16 +85,40 @@ public class Paquetes {
 		this.cantidadPasajeros = cantidadPasajeros;
 	}
 
-	public ArrayList<Pasajeros> getPasajeros() {
-		return pasajeros;
+	public Pasajeros getPasajero() {
+		return pasajero;
 	}
 
-	public void setPasajeros(ArrayList<Pasajeros> pasajeros) {
-		this.pasajeros = pasajeros;
+	public void setPasajero(Pasajeros pasajero) {
+		this.pasajero = pasajero;
 	}
 
-	public Facturas getFactura() {
-		return factura;
+	public ArrayList<Facturas> getFacturas() {
+		return facturas;
+	}
+
+	public boolean isEsViajeInternacional() {
+		return esViajeInternacional;
+	}
+
+	public void setEsViajeInternacional(boolean esViajeInternacional) {
+		this.esViajeInternacional = esViajeInternacional;
+	}
+
+	public boolean isQuiereVisitasGuiadas() {
+		return quiereVisitasGuiadas;
+	}
+
+	public void setQuiereVisitasGuiadas(boolean quiereVisitasGuiadas) {
+		this.quiereVisitasGuiadas = quiereVisitasGuiadas;
+	}
+
+	public boolean isQuiereAbonoTransporteLocal() {
+		return quiereAbonoTransporteLocal;
+	}
+
+	public void setQuiereAbonoTransporteLocal(boolean quiereAbonoTransporteLocal) {
+		this.quiereAbonoTransporteLocal = quiereAbonoTransporteLocal;
 	}
 	
 }

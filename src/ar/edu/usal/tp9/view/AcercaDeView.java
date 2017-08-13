@@ -21,13 +21,13 @@ public class AcercaDeView {
 	private static final String ANIO = "2017";
 	
 	private JFrame ventana = new JFrame("Acerca de"); 	 
-	private JTextArea leyendaNombre = new JTextArea(LEYENDA_NOMBRE,2, ConstantsUtils.ANCHO_TEXTO);
+	private JTextArea leyendaNombre = new JTextArea(LEYENDA_NOMBRE,2, ConstantsUtils.TEXTO_ANCHO);
 	private JTextArea nombre = new JTextArea(NOMBRE);
-	private JTextArea leyendaVersion = new JTextArea(LEYENDA_VERSION,2, ConstantsUtils.ANCHO_TEXTO);
+	private JTextArea leyendaVersion = new JTextArea(LEYENDA_VERSION,2, ConstantsUtils.TEXTO_ANCHO);
 	private JTextArea version = new JTextArea(VERSION);
-	private JTextArea leyendaAnio = new JTextArea(LEYENDA_ANIO,2, ConstantsUtils.ANCHO_TEXTO);
+	private JTextArea leyendaAnio = new JTextArea(LEYENDA_ANIO,2, ConstantsUtils.TEXTO_ANCHO);
 	private JTextArea anio = new JTextArea(ANIO);
-	private JTextArea leyendaAutores = new JTextArea(LEYENDA_AUTORES,2, ConstantsUtils.ANCHO_TEXTO);
+	private JTextArea leyendaAutores = new JTextArea(LEYENDA_AUTORES,2, ConstantsUtils.TEXTO_ANCHO);
 	private JTextArea autores = new JTextArea(AUTORES);
 	
 	private JTextArea[] componentesLeyendasArray = {leyendaNombre, leyendaVersion, leyendaAnio, leyendaAutores};
@@ -36,11 +36,10 @@ public class AcercaDeView {
 	public AcercaDeView() {
 		
 		ventana.setSize(ConstantsUtils.VENTANA_ANCHO, ConstantsUtils.VENTANA_ALTO);
-
+		ventana.setLayout(ESTILO_LAYOUT);
+		
 		GuiUtilities.aplicarFormatoComponentes(ventana, componentesLeyendasArray, true);
 		GuiUtilities.aplicarFormatoComponentes(ventana, componentesArray, false);
-		
-		ventana.setLayout(ESTILO_LAYOUT);
 		
 		GuiUtilities.agregarComponentesVentana(ventana, componentesLeyendasArray, componentesArray);
 		

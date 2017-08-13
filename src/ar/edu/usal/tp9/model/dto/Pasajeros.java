@@ -9,6 +9,8 @@ public class Pasajeros {
 	private int dni;
 	private String email;
 		
+	public Pasajeros() {}
+	
 	public Pasajeros(String nombreApellido, Calendar fechaNacimiento, int dni,
 			String email) {
 		super();
@@ -16,10 +18,6 @@ public class Pasajeros {
 		this.fechaNacimiento = fechaNacimiento;
 		this.dni = dni;
 		this.email = email;
-	}
-	
-	public Pasajeros() {
-		super();
 	}
 	
 	public String getNombreApellido() {
