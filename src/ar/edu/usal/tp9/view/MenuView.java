@@ -24,6 +24,7 @@ public class MenuView extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(Constants.VENTANA_ANCHO, Constants.VENTANA_ALTO);
 		this.setLayout(Constants.ESTILO_LAYOUT);
+		this.setLocationRelativeTo(null);
 		
 		JMenu sistemasMenu = new JMenu("Sistemas");
 		sistemasMenu.setMnemonic('S');

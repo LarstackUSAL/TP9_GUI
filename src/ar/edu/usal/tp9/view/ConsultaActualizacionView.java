@@ -6,7 +6,7 @@ public class ConsultaActualizacionView {
 
 	public ConsultaActualizacionView(ConsultaActualizacionController consultaActualizacionController) {
 		
-		
+		//debe consultar los datos de un paquete con filtros por pasajero y por localidad/fecha de salida
 
 	}
 	

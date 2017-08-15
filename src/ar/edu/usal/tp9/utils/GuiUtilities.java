@@ -1,6 +1,7 @@
 package ar.edu.usal.tp9.utils;
 
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 
@@ -12,45 +13,45 @@ import javax.swing.SwingConstants;
 
 public class GuiUtilities {
 
-	public static void aplicarFormatoComponentes(JFrame ventana, JTextArea[] componentesArray, boolean esTitulo) {
+	public static void aplicarFormatoComponentes(JFrame ventana, JTextArea[] componentesArray) {
 
-		for (int i = 0; i < componentesArray.length; i++) {
-			
-			aplicarFormato(ventana, componentesArray[i], esTitulo);
-		}
+		for (int i = 0; i < componentesArray.length; i++)
+			aplicarFormato(ventana, componentesArray[i]);
 		
 	}
 
 	public static void agregarComponentesVentana(JFrame ventana, Component[] componentesArray) {
 		
 		agregarComponentesVentana(ventana, componentesArray, null);
+		
 	}
 	
 	public static void agregarComponentesVentana(JFrame ventana,
-			Component[] componentesLeyendasArray, JTextArea[] componentesArray) {
+			Component[] componentesTitulosArray, JTextArea[] componentesArray) {
 		
-		for (int i = 0; i < componentesLeyendasArray.length; i++) {
+		for (int i = 0; i < componentesTitulosArray.length; i++) {
 			
-			ventana.add(componentesLeyendasArray[i]);
+			ventana.add(componentesTitulosArray[i]);
 			
 			if(componentesArray != null){
 				ventana.add(componentesArray[i]);	
-			}			
+			}
+			
 		}
+		
 	}
 
-	public static void aplicarFormato(JFrame ventana, JTextArea textArea, boolean esTitulo){
+	public static void aplicarFormato(JFrame ventana, JTextArea textArea){
 		
 		textArea.setEditable(false);	
 		textArea.setLineWrap(true);	
 		textArea.setWrapStyleWord(true); 
 		textArea.setCaretPosition(SwingConstants.LEFT);
 		textArea.setBackground(ventana.getBackground());
-		
-		if(esTitulo){
-			textArea.setFont(new Font(textArea.getFont().getName(), Font.ITALIC+Font.BOLD, 
+		textArea.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		textArea.setFont(new Font(textArea.getFont().getName(), Font.ITALIC, 
 				textArea.getFont().getSize()));
-		}		
+		
 	}
 
 	public static JMenuItem setearDatosJMenuItem(String nombreItem, ActionListener listener, JMenu menu) {
@@ -62,6 +63,7 @@ public class GuiUtilities {
 		menu.add(menuItem);
 		
 		return menuItem;
+		
 	}
-	
+
 }

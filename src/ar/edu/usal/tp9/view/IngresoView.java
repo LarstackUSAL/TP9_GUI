@@ -27,6 +27,7 @@ public class IngresoView {
 		
 	private JFrame ventana = new JFrame("Ingreso de datos del paquete");
 	
+	private JLabel lblPasajero = new JLabel("Pasajero: ");
 	private JLabel lblLocalidades = new JLabel("Localidades: ");
 	private JList listaLocalidadesOriginal;
 	private JScrollPane scrPanelOriginal;
@@ -57,9 +58,9 @@ public class IngresoView {
 	private ButtonGroup grpSeguro;
 
 	private JComboBox cmbHoteles;
-	private JCheckBox esPensionCompleta = new JCheckBox("Pension completa");
-	private JCheckBox quiereVisitasGuiadas = new JCheckBox("Requiere guia");
-	private JCheckBox quiereAbonoTransporteLocal = new JCheckBox("Requiere abono transporte");
+	private JCheckBox esPensionCompleta = new JCheckBox("Pension completa: ");
+	private JCheckBox quiereVisitasGuiadas = new JCheckBox("Requiere guia: ");
+	private JCheckBox quiereAbonoTransporteLocal = new JCheckBox("Requiere abono transporte: ");
 	
 	private static final String LEYENDA = "Brindar copia de condiciones y limites del contrato de seguro junto " +
 			"con los datos de contacto ante cualquier emergencia"; 	 
@@ -84,7 +85,7 @@ public class IngresoView {
 		ingresoController.setView(this);
 		this.ingresoController = ingresoController;
 		
-		GuiUtilities.aplicarFormato(ventana, leyenda, true);
+		GuiUtilities.aplicarFormato(ventana, leyenda);
 		
 		ventana.setSize(Constants.VENTANA_ANCHO, Constants.VENTANA_ALTO);
 		ventana.setLayout(Constants.ESTILO_LAYOUT);
@@ -142,7 +143,7 @@ public class IngresoView {
 		grpSeguro.add(rdbSi);
 		grpSeguro.add(rdbNo);
 		
-		GuiUtilities.aplicarFormato(ventana, leyenda, true);
+		GuiUtilities.aplicarFormato(ventana, leyenda);
 		leyenda.setBackground(Color.RED);
 		leyenda.setVisible(false);
 		
@@ -157,7 +158,8 @@ public class IngresoView {
 		btnCancelar.setActionCommand("Cancelar");
 		btnCancelar.addActionListener(ingresoController);
 		
-		Component[] componentesArray = {cmbPasajeros, lblLocalidades, scrPanelOriginal, btnAgregar, btnQuitar, pnlCopia, scrPanelCopia,  
+		Component[] componentesArray = {lblPasajero, cmbPasajeros, lblLocalidades, scrPanelOriginal, 
+				btnAgregar, btnQuitar, pnlCopia, scrPanelCopia,  
 				lblHorarioSalida, cmbHorarios, cmbHoras, lblFechaSalida, txtFechaSalida, lblFechaLlegada, 
 				txtFechaLlegada, lblSeguro, rdbOcultoSeguro, rdbSi, rdbNo, leyenda,
 				quiereAbonoTransporteLocal, quiereVisitasGuiadas, cmbHoteles,
