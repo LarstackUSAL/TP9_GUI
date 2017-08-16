@@ -201,14 +201,14 @@ public class IngresoView {
 		
 		String output =  "dd/mm/yyyy";
 		
-		cmbPasajeros.removeAllItems();
+		cmbPasajeros.setSelectedIndex(0);
 		listaLocalidadesOriginal.clearSelection();
 		listModel.removeAllElements();
 		txtFechaSalida.setText(output);
-		cmbHorarios.removeAllItems();
+		cmbHorarios.setSelectedIndex(0);
 		comboModel.removeAllElements();
 		txtFechaLlegada.setText(output);
-		cmbHoteles.removeAllItems();
+		cmbHoteles.setSelectedIndex(0);
 		txtImporte.setText("");
 		rdbOcultoSeguro.setSelected(true);
 		esPensionCompleta.setSelected(false);

@@ -14,7 +14,7 @@ import ar.edu.usal.tp9.model.dto.Pasajeros;
 import ar.edu.usal.tp9.utils.Constants;
 import ar.edu.usal.tp9.view.IngresoView;
 
-public class IngresoController implements ActionListener{
+public class IngresoController implements ActionListener {
 	
 	private IngresoView ingresoView;
 
@@ -84,7 +84,7 @@ public class IngresoController implements ActionListener{
 				for (int j = 0; j < Constants.strHorasManana.length; j++) {
 					ingresoView.getComboHoras().addItem(Constants.strHorasManana[j]);
 				}
-	
+
 			} else if (ingresoView.getComboHorariosIndex() == 2) {
 				ingresoView.getComboModel().removeAllElements();
 				for (int j = 0; j < Constants.strHorasTarde.length; j++) {

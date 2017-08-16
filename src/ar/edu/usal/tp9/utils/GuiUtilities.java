@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -27,15 +28,28 @@ public class GuiUtilities {
 		
 	}
 	
-	public static void agregarComponentesVentana(JFrame ventana,
+
+	public static void agregarComponentesVentana(JPanel pnlPaqueteBuscado, Component[] componentesPaqueteArray) {
+		
+		agregarComponentesVentana(pnlPaqueteBuscado, componentesPaqueteArray, null);
+		
+	}
+	
+	public static void agregarComponentesVentana(Object ventana,
 			Component[] componentesTitulosArray, JTextArea[] componentesArray) {
 		
 		for (int i = 0; i < componentesTitulosArray.length; i++) {
 			
-			ventana.add(componentesTitulosArray[i]);
+			if(ventana instanceof JPanel)
+				((JPanel)ventana).add(componentesTitulosArray[i]);
+			else
+				((JFrame)ventana).add(componentesTitulosArray[i]);
 			
 			if(componentesArray != null){
-				ventana.add(componentesArray[i]);	
+				if(ventana instanceof JPanel)
+					((JPanel)ventana).add(componentesArray[i]);
+				else
+					((JFrame)ventana).add(componentesArray[i]);
 			}
 			
 		}

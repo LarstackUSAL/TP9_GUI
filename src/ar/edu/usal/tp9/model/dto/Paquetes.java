@@ -10,10 +10,8 @@ public class Paquetes {
 	private Calendar fechaHoraLlegada;
 	private double importe;
 	private boolean tieneSeguro;
-	private int cantidadPasajeros;	//es necesario este atributo???
 	private Pasajeros pasajero;
 	private Facturas factura;
-	private boolean esViajeInternacional;	//es necesario este atributo???
 	private boolean quiereVisitasGuiadas;
 	private boolean quiereAbonoTransporteLocal;
 	
@@ -21,17 +19,14 @@ public class Paquetes {
 	
 	public Paquetes(ArrayList<String> localidades, Calendar fechaHoraSalida,
 			Calendar fechaHoraLlegada, double importe, boolean tieneSeguro,
-			int cantidadPasajeros, Pasajeros pasajero, boolean esViajeInternacional, 
-			boolean quiereVisitasGuiadas, boolean quiereAbonoTransporteLocal) {
+			Pasajeros pasajero, boolean quiereVisitasGuiadas, boolean quiereAbonoTransporteLocal) {
 		super();
 		this.localidades = localidades;
 		this.fechaHoraSalida = fechaHoraSalida;
 		this.fechaHoraLlegada = fechaHoraLlegada;
 		this.importe = importe;
 		this.tieneSeguro = tieneSeguro;
-		this.cantidadPasajeros = cantidadPasajeros;
 		this.pasajero = pasajero;
-		this.esViajeInternacional = esViajeInternacional;
 		this.quiereVisitasGuiadas = quiereVisitasGuiadas;
 		this.quiereAbonoTransporteLocal = quiereAbonoTransporteLocal;
 		
@@ -77,14 +72,6 @@ public class Paquetes {
 		this.tieneSeguro = tieneSeguro;
 	}
 
-	public int getCantidadPasajeros() {
-		return cantidadPasajeros;
-	}
-
-	public void setCantidadPasajeros(int cantidadPasajeros) {
-		this.cantidadPasajeros = cantidadPasajeros;
-	}
-
 	public Pasajeros getPasajero() {
 		return pasajero;
 	}
@@ -95,14 +82,6 @@ public class Paquetes {
 
 	public Facturas getFacturas() {
 		return factura;
-	}
-
-	public boolean isEsViajeInternacional() {
-		return esViajeInternacional;
-	}
-
-	public void setEsViajeInternacional(boolean esViajeInternacional) {
-		this.esViajeInternacional = esViajeInternacional;
 	}
 
 	public boolean isQuiereVisitasGuiadas() {
