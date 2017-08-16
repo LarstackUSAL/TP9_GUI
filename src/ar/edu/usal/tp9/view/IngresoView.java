@@ -80,9 +80,16 @@ public class IngresoView {
 
 	private IngresoController ingresoController;
 
-/*
- * El soft es para una asociacion que organiza viajes. Por lo tanto carga las personas en el jlist para crear el grupo.
- */
+	/*
+	 * El soft es para una asociacion que organiza viajes. Por lo tanto carga las personas en el jlist para crear el grupo.
+	 */
+	
+	
+	/*
+	 * Falta tp: componentes obligatorios, restantes datos miembros, generar factura, ventana edición, ventana consulta 
+	 * masiva, package dao, package interfaces, package exception, borrar comentarios, rehacer diag clases, armar intro tp, 
+	 * archivos)
+	 */
 
 	public IngresoView(IngresoController ingresoController) {
 		
@@ -169,6 +176,7 @@ public class IngresoView {
 		txtImporte.setEditable(false);
 //		txtImporte.setText(((Double)ingresoController.calcularImporte()).toString());
 //		de que manera se ejecuta la funcion para saber el importe en base a las selecciones anteriores?
+//		hay que implementar interfaz
 		
 		btnAceptar.setActionCommand("Aceptar");
 		btnAceptar.addActionListener(ingresoController);

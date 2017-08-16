@@ -41,6 +41,7 @@ public class IngresoController implements ActionListener{
 
 //			ingresoView.validar(); //3 componentes distintos
 //			Guardar();
+//			implentar generacion de factura a partir de los datos guardados, a traves de interfaz?
 //			Mensaje si todo lo anterior esta ok:
 			if(true) {
 				JOptionPane.showMessageDialog(null, "Datos guardados con exito", "Mensaje", 
