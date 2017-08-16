@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.JOptionPane;
 
 import ar.edu.usal.tp9.model.dao.TablasMaestrasDao;
@@ -29,8 +28,10 @@ public class IngresoController implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		
 		if ("Cancelar".equals(e.getActionCommand())) {
-
-			int rta = JOptionPane.showConfirmDialog((Component)e.getSource(), "Los datos seran borrados. Confirma?", 
+			
+//			int rta = JOptionPane.showConfirmDialog((Component)e.getSource(, "Los datos seran borrados. Confirma?",
+//					"Confirmacion", JOptionPane.OK_CANCEL_OPTION);
+			int rta = JOptionPane.showConfirmDialog(null, "Los datos seran borrados. Confirma?", 
 					"Confirmacion", JOptionPane.OK_CANCEL_OPTION);
 
 			if (rta == JOptionPane.YES_OPTION) 
@@ -42,7 +43,7 @@ public class IngresoController implements ActionListener{
 //			Guardar();
 //			Mensaje si todo lo anterior esta ok:
 			if(true) {
-				JOptionPane.showMessageDialog((Component)e.getSource(), "Datos guardados con exito", "Mensaje", 
+				JOptionPane.showMessageDialog(null, "Datos guardados con exito", "Mensaje", 
 						JOptionPane.INFORMATION_MESSAGE);
 				ingresoView.cerrar();
 			}
@@ -95,10 +96,10 @@ public class IngresoController implements ActionListener{
 					ingresoView.getComboHoras().addItem(Constants.strHorasNoche[j]);
 				}
 	
-			}
+			} 
 			
 		}
-			
+						
 	}
 
 //	Falta hacer

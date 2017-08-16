@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class GuiUtilities {
@@ -16,7 +17,7 @@ public class GuiUtilities {
 	public static void aplicarFormatoComponentes(JFrame ventana, JTextArea[] componentesArray) {
 
 		for (int i = 0; i < componentesArray.length; i++)
-			aplicarFormato(ventana, componentesArray[i]);
+			aplicarFormatoTextArea(ventana, componentesArray[i]);
 		
 	}
 
@@ -41,7 +42,7 @@ public class GuiUtilities {
 		
 	}
 
-	public static void aplicarFormato(JFrame ventana, JTextArea textArea){
+	public static void aplicarFormatoTextArea(JFrame ventana, JTextArea textArea){
 		
 		textArea.setEditable(false);	
 		textArea.setLineWrap(true);	

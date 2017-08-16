@@ -10,7 +10,7 @@ public class Constants {
 	public static final int CELDA_ALTO = 15;
 	public static final int CELDA_ANCHO = 200;
 	public static final int ITEMS_MOSTRAR = 5; 	
-	public static final FlowLayout ESTILO_LAYOUT = new FlowLayout();
+	public static final FlowLayout ESTILO_LAYOUT = new FlowLayout(FlowLayout.CENTER, 5, 10);
 	
 	public static final String [] strHorarios = {"Seleccionar", "Mañana", "Tarde", "Noche"};
 	public static final String [] strHorasManana = {"Seleccionar", "0 am", "1 am", "2 am", "3 am", "4 am", "5 am", "6 am", 

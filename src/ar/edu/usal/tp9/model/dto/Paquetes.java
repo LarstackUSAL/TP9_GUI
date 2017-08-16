@@ -10,10 +10,10 @@ public class Paquetes {
 	private Calendar fechaHoraLlegada;
 	private double importe;
 	private boolean tieneSeguro;
-	private int cantidadPasajeros;
+	private int cantidadPasajeros;	//es necesario este atributo???
 	private Pasajeros pasajero;
 	private Facturas factura;
-	private boolean esViajeInternacional;
+	private boolean esViajeInternacional;	//es necesario este atributo???
 	private boolean quiereVisitasGuiadas;
 	private boolean quiereAbonoTransporteLocal;
 	

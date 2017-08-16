@@ -11,7 +11,7 @@ import ar.edu.usal.tp9.utils.GuiUtilities;
 
 public class AcercaDeView {
 
-	private static final FlowLayout ESTILO_LAYOUT = new FlowLayout();
+//	private static final FlowLayout ESTILO_LAYOUT = new FlowLayout(FlowLayout.RIGHT, 5, 10);
 	private static final String LEYENDA_NOMBRE = "Nombre: ";
 	private static final String LEYENDA_VERSION = "Version: ";
 	private static final String LEYENDA_ANIO = "Año: ";
@@ -37,7 +37,7 @@ public class AcercaDeView {
 	public AcercaDeView() {
 		
 		ventana.setSize(350, Constants.VENTANA_ALTO / 2);
-		ventana.setLayout(ESTILO_LAYOUT);
+		ventana.setLayout(Constants.ESTILO_LAYOUT);
 		ventana.setLocationRelativeTo(null);
 		
 		GuiUtilities.aplicarFormatoComponentes(ventana, componentesArray);
