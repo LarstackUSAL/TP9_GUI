@@ -3,7 +3,7 @@ package ar.edu.usal.tp9.view;
 import java.awt.Color;
 import java.awt.Component;
 
-import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -19,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 
 import ar.edu.usal.tp9.controller.IngresoController;
 import ar.edu.usal.tp9.utils.Constants;
@@ -34,11 +33,11 @@ public class IngresoView {
 	
 	private JLabel lblLocalidades = new JLabel("Localidades: ");
 	private JList listaLocalidadesOriginal;
-	private JScrollPane scrPanelOriginal;
+	private JScrollPane scrPaneOriginal;
 	private JButton btnAgregar = new JButton("Agregar >>");
 	private JButton btnQuitar = new JButton("<< Quitar");
 	private JList listaLocalidadesCopia;
-	private JScrollPane scrPanelCopia;
+	private JScrollPane scrPaneCopia;
 	private DefaultListModel listModel;
 	private JPanel pnlCopia;
 	
@@ -88,7 +87,7 @@ public class IngresoView {
 	/*
 	 * Falta tp: componentes obligatorios, restantes datos miembros, generar factura, ventana edición, ventana consulta 
 	 * masiva, package dao, package interfaces, package exception, borrar comentarios, rehacer diag clases, armar intro tp, 
-	 * archivos)
+	 * archivos, unificar funciones aplicacion formatos)
 	 */
 
 	public IngresoView(IngresoController ingresoController) {
@@ -96,41 +95,30 @@ public class IngresoView {
 		ingresoController.setView(this);
 		this.ingresoController = ingresoController;
 		
-		ventana.setSize(Constants.VENTANA_ANCHO, Constants.VENTANA_ALTO);
-		ventana.setLayout(Constants.ESTILO_LAYOUT);
-		ventana.setLocationRelativeTo(null);
+		GuiUtilities.aplicarFormatoVentana(ventana);
 		
 		cmbPasajeros = new JComboBox(this.ingresoController.getPasajerosFromTxt());
 
-		this.listaLocalidadesOriginal = new JList(this.ingresoController.getLocalidadesFromTxt());
+		int opcionSeleccion = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		
-		listaLocalidadesOriginal.setVisibleRowCount(Constants.ITEMS_MOSTRAR);
-		listaLocalidadesOriginal.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		this.scrPanelOriginal = new JScrollPane(listaLocalidadesOriginal); 
+		listaLocalidadesOriginal = new JList(this.ingresoController.getLocalidadesFromTxt());
+		GuiUtilities.aplicarFormatoLista(ventana, listaLocalidadesOriginal, opcionSeleccion);
+		scrPaneOriginal = new JScrollPane(listaLocalidadesOriginal); 
 
-		btnAgregar.setActionCommand("Agregar");
-		btnAgregar.addActionListener(ingresoController);
+		GuiUtilities.setearComandoBoton(btnAgregar, "Agregar", ingresoController);
+		GuiUtilities.setearComandoBoton(btnQuitar, "Quitar", ingresoController);
 		
-		btnQuitar.setActionCommand("Quitar");
-		btnQuitar.addActionListener(ingresoController);
-
-		this.listModel = new DefaultListModel();
-		pnlCopia = new JPanel();
-		pnlCopia.setBorder(listaLocalidadesOriginal.getBorder());
-		pnlCopia.setBackground(listaLocalidadesOriginal.getBackground());
-		pnlCopia.setForeground(listaLocalidadesOriginal.getForeground());
+		listModel = new DefaultListModel();
 		
 		listaLocalidadesCopia = new JList(listModel);
-		listaLocalidadesCopia.setVisibleRowCount(Constants.ITEMS_MOSTRAR);
-		listaLocalidadesCopia.setOpaque(true);
-		listaLocalidadesCopia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		this.scrPanelCopia = new JScrollPane(listaLocalidadesCopia); 
-		pnlCopia.add(listaLocalidadesCopia);
+		GuiUtilities.aplicarFormatoLista(ventana, listaLocalidadesCopia, opcionSeleccion);
+		scrPaneCopia = new JScrollPane(listaLocalidadesCopia); 
 		
-//		txtFechaSalida.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		pnlCopia = new JPanel();
+		GuiUtilities.aplicarFormatoPanel(ventana, pnlCopia, listaLocalidadesOriginal, listaLocalidadesCopia);
+				
+		GuiUtilities.aplicarFormatoTextField(ventana, txtFechaSalida);
 		txtFechaSalida.setText("dd/mm/yyyy");
-		txtFechaSalida.setCaretPosition(SwingConstants.CENTER);
-		txtFechaSalida.setHorizontalAlignment(JTextField.CENTER);
 //		txtFechaSalida.setActionCommand("Click");
 //		txtFechaSalida.addActionListener(ingresoController);
 //		hay que hacer un click event para que borre ejemplo modelo
@@ -138,54 +126,42 @@ public class IngresoView {
 		cmbHorarios.setActionCommand("Seleccionar");
 		cmbHorarios.addActionListener(ingresoController);
 		
-		this.comboModel = new DefaultComboBoxModel();
+		comboModel = new DefaultComboBoxModel();
 		cmbHoras = new JComboBox(comboModel);
 		cmbHoras.setMaximumRowCount(Constants.ITEMS_MOSTRAR);
 		
+		GuiUtilities.aplicarFormatoTextField(ventana, txtFechaLlegada);
 		txtFechaLlegada.setText("dd/mm/yyyy");
-		txtFechaLlegada.setCaretPosition(SwingConstants.CENTER);
-		txtFechaLlegada.setHorizontalAlignment(JTextField.CENTER);
 //		hay que hacer un click event para que borre ejemplo modelo
 //		falta agregar el horario de llegada en base a los viajes disponibles
 		
 		rdbSi = new JRadioButton("Si");
-		rdbSi.setMnemonic('S');
-		rdbSi.setActionCommand("Si");
-		rdbSi.addActionListener(ingresoController);
+		GuiUtilities.aplicarFormatoRadioButton(ventana, rdbSi, rdbSi.getText(), ingresoController);
 		rdbNo = new JRadioButton("No");
-		rdbNo.setMnemonic('N');
-		rdbNo.setActionCommand("No");
-		rdbNo.addActionListener(ingresoController);
+		GuiUtilities.aplicarFormatoRadioButton(ventana, rdbNo, rdbNo.getText(), ingresoController);
 		rdbOcultoSeguro = new JRadioButton("");
 		rdbOcultoSeguro.setVisible(false);
 		
 		grpSeguro = new ButtonGroup();
-		grpSeguro.add(rdbOcultoSeguro);
-		grpSeguro.add(rdbSi);
-		grpSeguro.add(rdbNo);
+		this.addBotonesGrupo(grpSeguro);
 		
 		GuiUtilities.aplicarFormatoTextArea(ventana, leyenda);
-		leyenda.setBackground(Color.RED);
+		leyenda.setBorder(BorderFactory.createLineBorder(Color.RED));
 		leyenda.setVisible(false);
 		
 		cmbHoteles = new JComboBox(this.ingresoController.getHotelesFromTxt());
 		
-		txtImporte.setBorder(txtFechaSalida.getBorder());
-		txtImporte.setCaretPosition(SwingConstants.CENTER);
-		txtImporte.setHorizontalAlignment(JTextField.CENTER);
+		GuiUtilities.aplicarFormatoTextField(ventana, txtImporte);
 		txtImporte.setEditable(false);
 //		txtImporte.setText(((Double)ingresoController.calcularImporte()).toString());
 //		de que manera se ejecuta la funcion para saber el importe en base a las selecciones anteriores?
 //		hay que implementar interfaz
 		
-		btnAceptar.setActionCommand("Aceptar");
-		btnAceptar.addActionListener(ingresoController);
+		GuiUtilities.setearComandoBoton(btnAceptar, "Aceptar", ingresoController);
+		GuiUtilities.setearComandoBoton(btnCancelar, "Cancelar", ingresoController);
 		
-		btnCancelar.setActionCommand("Cancelar");
-		btnCancelar.addActionListener(ingresoController);
-		
-		Component[] componentesArray = {lblPasajero, cmbPasajeros, lblLocalidades, scrPanelOriginal, 
-				btnAgregar, btnQuitar, pnlCopia, scrPanelCopia, lblFechaSalida, txtFechaSalida, 
+		Component[] componentesArray = {lblPasajero, cmbPasajeros, lblLocalidades, scrPaneOriginal, 
+				btnAgregar, btnQuitar, pnlCopia, scrPaneCopia, lblFechaSalida, txtFechaSalida, 
 				lblHorarioSalida, cmbHorarios, cmbHoras, lblFechaLlegada, txtFechaLlegada, 
 				lblSeguro, rdbOcultoSeguro, rdbSi, rdbNo, leyenda, quiereAbonoTransporteLocal, 
 				quiereVisitasGuiadas, lblHoteles, cmbHoteles, esPensionCompleta, lblImporte, 
@@ -217,6 +193,14 @@ public class IngresoView {
 		
 	}
 	
+	private void addBotonesGrupo(ButtonGroup grupoBotones) {
+
+		grpSeguro.add(rdbOcultoSeguro);
+		grpSeguro.add(rdbSi);
+		grpSeguro.add(rdbNo);
+				
+	}
+
 	public JList getListaLocalidadesOriginal() {
 		return listaLocalidadesOriginal;		
 	}

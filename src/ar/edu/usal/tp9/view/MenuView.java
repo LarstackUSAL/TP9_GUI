@@ -6,9 +6,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import ar.edu.usal.tp9.controller.MenuController;
-import ar.edu.usal.tp9.utils.Constants;
 import ar.edu.usal.tp9.utils.GuiUtilities;
-
 
 public class MenuView extends JFrame {
 
@@ -22,9 +20,7 @@ public class MenuView extends JFrame {
 		this.menuController = menuController;
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(Constants.VENTANA_ANCHO, Constants.VENTANA_ALTO);
-		this.setLayout(Constants.ESTILO_LAYOUT);
-		this.setLocationRelativeTo(null);
+		GuiUtilities.aplicarFormatoVentana(this);
 		
 		JMenu sistemasMenu = new JMenu("Sistemas");
 		sistemasMenu.setMnemonic('S');
@@ -45,6 +41,7 @@ public class MenuView extends JFrame {
 		barra.add(sistemasMenu);
 
 		this.setVisible(true);
+		
 	}
 
 }
