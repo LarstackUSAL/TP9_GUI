@@ -321,4 +321,10 @@ public class IngresoView {
 		
 		return datosValidos;
 	}
+
+	public void mostrarMensajeDialog(String mensajeBody, String titulo) {
+	
+		JOptionPane.showMessageDialog(null, mensajeBody, titulo, JOptionPane.INFORMATION_MESSAGE);
+		this.cerrar();
+	}
 }

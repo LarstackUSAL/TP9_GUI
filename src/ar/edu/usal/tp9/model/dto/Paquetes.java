@@ -3,6 +3,9 @@ package ar.edu.usal.tp9.model.dto;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import ar.edu.usal.tp9.model.dao.FacturasDao;
+import ar.edu.usal.tp9.utils.Constants;
+
 public class Paquetes {
 
 	private ArrayList<String> localidades;
@@ -14,13 +17,15 @@ public class Paquetes {
 	private Facturas factura;
 	private boolean quiereVisitasGuiadas;
 	private boolean quiereAbonoTransporteLocal;
+	private int id;
 	
 	public Paquetes(){}
 	
-	public Paquetes(ArrayList<String> localidades, Calendar fechaHoraSalida,
+	public Paquetes(int id, ArrayList<String> localidades, Calendar fechaHoraSalida,
 			Calendar fechaHoraLlegada, double importe, boolean tieneSeguro,
 			Pasajeros pasajero, boolean quiereVisitasGuiadas, boolean quiereAbonoTransporteLocal) {
 		super();
+		this.id = id;
 		this.localidades = localidades;
 		this.fechaHoraSalida = fechaHoraSalida;
 		this.fechaHoraLlegada = fechaHoraLlegada;
@@ -80,6 +85,30 @@ public class Paquetes {
 		this.pasajero = pasajero;
 	}
 
+	public void generarFactura() {
+		
+		this.factura = new Facturas();
+		
+		this.factura.setNumero(FacturasDao.getNextIdFactura());
+		this.factura.setFecha(Calendar.getInstance());
+		this.factura.setImporte(this.importe);
+		this.factura.setPasajero(this.pasajero);
+		this.factura.setTipo(Constants.TIPO_FACTURA);
+		
+	}
+	
+	public void generarFactura(int numeroFactura, int idPaquete, Calendar fecha, Pasajeros pasajero, char tipo,
+			double importe) {
+
+		this.factura = new Facturas();
+		
+		this.factura.setFecha(fecha);
+		this.factura.setImporte(importe);
+		this.factura.setNumero(numeroFactura);
+		this.factura.setPasajero(pasajero);
+		this.factura.setTipo(tipo);
+	}	
+
 	public Facturas getFacturas() {
 		return factura;
 	}
@@ -99,5 +128,12 @@ public class Paquetes {
 	public void setQuiereAbonoTransporteLocal(boolean quiereAbonoTransporteLocal) {
 		this.quiereAbonoTransporteLocal = quiereAbonoTransporteLocal;
 	}
-	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }

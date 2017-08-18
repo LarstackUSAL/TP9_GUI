@@ -534,6 +534,14 @@ public class Validador {
 			return true;
 		else return false;
 	}
+
+	public static String HoraCalendarToString(Calendar fechaHora) {
+		
+		int horaTmp = fechaHora.get(Calendar.HOUR_OF_DAY);
+		int minutos = fechaHora.get(Calendar.MINUTE);
+
+		return horaTmp + ":" + minutos;
+	}
 	
 //	public static LinkedHashMap<String, Integer> sortHashMapStringInteger(HashMap<String, Integer> parametroMap) {
 //	    

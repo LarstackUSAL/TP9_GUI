@@ -45,19 +45,20 @@ public class IngresoController implements ActionListener {
 
 		} else if ("Aceptar".equals(e.getActionCommand())) {
 			
+			boolean persistenciaOk = false;
+			
 			if(ingresoView.validar()){
 				
-				this.guardarPaquete();	
-			}
-			
-//			implentar generacion de factura a partir de los datos guardados, a traves de interfaz?
-//			Mensaje si todo lo anterior esta ok:
-			if(true) {
-				JOptionPane.showMessageDialog(null, "Datos guardados con exito", "Mensaje", 
-						JOptionPane.INFORMATION_MESSAGE);
-				ingresoView.cerrar();
+				persistenciaOk = this.guardarPaquete();
 			}
 
+			if(persistenciaOk) {
+
+				this.ingresoView.mostrarMensajeDialog("Datos guardados con exito!", "Exito");
+			}else{
+				
+				this.ingresoView.mostrarMensajeDialog("Se ha verificado un error de persistencia.", "ERROR");
+			}
 		} else if ("Agregar".equals(e.getActionCommand())) {
 			
 			ArrayList<Object> elementosSeleccionados = (ArrayList<Object>) ingresoView.getListaLocalidadesOriginal().getSelectedValuesList();
@@ -114,7 +115,7 @@ public class IngresoController implements ActionListener {
 						
 	}
 
-	private void guardarPaquete() {
+	private boolean guardarPaquete() {
 
 		Paquetes paquete;
 		
@@ -131,7 +132,9 @@ public class IngresoController implements ActionListener {
 			
 			paquete = new Paquetes();
 		}
-		
+
+		paquete.setId(PaquetesDao.getNextIdPaquetes());
+
 		Calendar fechaHoraSalida = Validador.stringToCalendar(this.ingresoView.getTxtFechaSalida().getText().trim(), "dd/MM/yyyy");
 		paquete.setFechaHoraSalida(fechaHoraSalida);
 		
@@ -155,10 +158,13 @@ public class IngresoController implements ActionListener {
 		paquete.setTieneSeguro(this.ingresoView.getGrpSeguro().getSelection().getActionCommand().trim().
 				equals("Si") ? true : false);
 		
+		//Se genera la factura correspondiente.
+		paquete.generarFactura();
+		
 		PaquetesDao paquetesDao = PaquetesDao.getInstance();
 		paquetesDao.getPaquetes().add(paquete);
 		
-		paquetesDao.persistirInformacion();
+		return paquetesDao.persistirPaquetes();
 	}
 
 	//	Falta hacer
