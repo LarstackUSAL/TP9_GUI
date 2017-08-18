@@ -2,6 +2,7 @@ package ar.edu.usal.tp9.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -13,6 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -23,6 +25,7 @@ import javax.swing.ListSelectionModel;
 import ar.edu.usal.tp9.controller.IngresoController;
 import ar.edu.usal.tp9.utils.Constants;
 import ar.edu.usal.tp9.utils.GuiUtilities;
+import ar.edu.usal.tp9.utils.Validador;
 
 public class IngresoView {
 		
@@ -45,7 +48,7 @@ public class IngresoView {
 	private JTextField txtFechaSalida = new JTextField(Constants.TEXTO_ANCHO * 3/4);
 	
 	private JLabel lblHorarioSalida = new JLabel("Horario salida: ");
-	private JComboBox cmbHorarios = new JComboBox(Constants.strHorarios);
+	private JComboBox cmbHorarios;
 	private JComboBox cmbHoras;
 	private DefaultComboBoxModel comboModel;
 
@@ -68,7 +71,7 @@ public class IngresoView {
 	
 	private JLabel lblHoteles = new JLabel("Hotel/es: ");
 	private JComboBox cmbHoteles;
-	
+
 	private JCheckBox esPensionCompleta = new JCheckBox("Pension completa");
 	
 	private JLabel lblImporte = new JLabel("Importe: ");
@@ -85,7 +88,7 @@ public class IngresoView {
 	
 	
 	/*
-	 * Falta tp: componentes obligatorios, restantes datos miembros, generar factura, ventana edición, ventana consulta 
+	 * Falta tp: componentes obligatorios, restantes datos miembros, generar factura, ventana ediciï¿½n, ventana consulta 
 	 * masiva, package dao, package interfaces, package exception, borrar comentarios, rehacer diag clases, armar intro tp, 
 	 * archivos, unificar funciones aplicacion formatos)
 	 */
@@ -96,6 +99,8 @@ public class IngresoView {
 		this.ingresoController = ingresoController;
 		
 		GuiUtilities.aplicarFormatoVentana(ventana);
+		
+		cmbHorarios = new JComboBox(this.ingresoController.getTurnosFromTxt());
 		
 		cmbPasajeros = new JComboBox(this.ingresoController.getPasajerosFromTxt());
 
@@ -249,4 +254,71 @@ public class IngresoView {
 		return txtImporte;
 	}
 
+	public JTextField getTxtFechaSalida() {
+		return txtFechaSalida;
+	}
+
+	public JComboBox getCmbPasajeros() {
+		return cmbPasajeros;
+	}
+
+	public JCheckBox getQuiereAbonoTransporteLocal() {
+		return quiereAbonoTransporteLocal;
+	}
+
+	public JCheckBox getQuiereVisitasGuiadas() {
+		return quiereVisitasGuiadas;
+	}
+
+	public ButtonGroup getGrpSeguro() {
+		return grpSeguro;
+	}
+	
+	public JComboBox getCmbHoteles() {
+		return cmbHoteles;
+	}
+
+	public JCheckBox getEsPensionCompleta() {
+		return esPensionCompleta;
+	}
+
+	public boolean validar() {
+
+		ArrayList<String> errores = new ArrayList<>();
+		boolean datosValidos = true;
+		
+		if(this.listaLocalidadesCopia.getSelectedValuesList().isEmpty()){
+			
+			errores.add("localidades");
+		}
+		if(this.cmbPasajeros.getSelectedIndex() <= 0){
+			
+			errores.add("pasajero");
+		}
+		if(this.txtFechaSalida.getText().trim().isEmpty()
+			|| this.txtFechaSalida.getText().trim().equals("dd/mm/yyyy")
+			|| Validador.stringToCalendar(this.txtFechaSalida.getText().trim(), "dd/MM/yyyy") == null){
+			
+			errores.add("fecha salida");
+		}
+		
+		if(!errores.isEmpty()){
+			
+			String error = "Los datos de:\n";
+			
+			for (int i = 0; i < errores.size(); i++) {
+				
+				error = error + "\n- " + errores.get(i);
+			}
+			
+			error += "\n\nson invalidos.";
+			
+			datosValidos = false;
+			
+			JOptionPane.showMessageDialog(null, error, "Datos obligatorios", 
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+		
+		return datosValidos;
+	}
 }

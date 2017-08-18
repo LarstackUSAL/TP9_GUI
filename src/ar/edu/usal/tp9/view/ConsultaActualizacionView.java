@@ -58,7 +58,7 @@ public class ConsultaActualizacionView {
 	private JTextField txtFechaSalida = new JTextField(Constants.TEXTO_ANCHO * 3/4);
 	
 	private JLabel lblHorarioSalida = new JLabel("Horario salida: ");
-	private JComboBox cmbHorarios = new JComboBox(Constants.strHorarios);
+	private JComboBox cmbHorarios;
 	private JComboBox cmbHoras;
 	private DefaultComboBoxModel comboModel;
 
@@ -97,6 +97,8 @@ public class ConsultaActualizacionView {
 		
 		GuiUtilities.aplicarFormatoVentana(ventana);
 		
+		cmbHorarios = new JComboBox(this.consultaActualizacionController.getTurnosFromTxt());
+
 		cmbPasajeros = new JComboBox(this.consultaActualizacionController.getPasajerosFromTxt());
 		
 		cmbLocalidades = new JComboBox(this.consultaActualizacionController.getLocalidadesFromTxt());

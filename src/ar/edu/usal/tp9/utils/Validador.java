@@ -431,6 +431,27 @@ public class Validador {
 
 		fechaLlegada.set(Calendar.MINUTE, minutos);
 	}
+	
+	public static void setearHora(int horaTmp, int minutos, Calendar fecha) {
+
+		int hora;
+
+		if(horaTmp == 0 || horaTmp == 24){
+			hora = 0;
+			fecha.set(Calendar.AM_PM, Calendar.AM);
+		}else if(horaTmp >= 12){
+
+			hora = (horaTmp + 12) - 24;
+			fecha.set(Calendar.AM_PM, Calendar.PM);
+		}else{
+			hora = horaTmp;
+			fecha.set(Calendar.AM_PM, Calendar.AM);
+		}
+
+		fecha.set(Calendar.HOUR, hora);
+
+		fecha.set(Calendar.MINUTE, minutos);
+	}
 
 	public static int calcularDiasEntreFechas(Calendar fechaPartida, Calendar fechaLlegada){
 
@@ -475,6 +496,7 @@ public class Validador {
 		} catch (ParseException e) {
 
 			System.out.println("Se ha verificado un error con el parsing de la fecha.");
+			calendar = null;
 		}
 
 		return calendar;		

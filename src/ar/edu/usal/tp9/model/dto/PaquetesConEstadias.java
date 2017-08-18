@@ -1,29 +1,28 @@
 package ar.edu.usal.tp9.model.dto;
 
-import java.util.ArrayList;
 
 public class PaquetesConEstadias extends Paquetes {
 
-	private ArrayList<Hoteles> hoteles;
+	private Hoteles hotel;
 	private boolean esPensionCompleta;
 		
 	public PaquetesConEstadias() {
 		super();
 	}
 	
-	public PaquetesConEstadias(ArrayList<Hoteles> hoteles,
+	public PaquetesConEstadias(Hoteles hotel,
 			boolean esPensionCompleta) {
 		super();
-		this.hoteles = hoteles;
+		this.hotel = hotel;
 		this.esPensionCompleta = esPensionCompleta;		
 	}
 	
-	public ArrayList<Hoteles> getHoteles() {
-		return hoteles;
+	public Hoteles getHotel() {
+		return hotel;
 	}
 	
-	public void setHoteles(ArrayList<Hoteles> hoteles) {
-		this.hoteles = hoteles;
+	public void setHotel(Hoteles hotel) {
+		this.hotel = hotel;
 	}
 	
 	public boolean isEsPensionCompleta() {

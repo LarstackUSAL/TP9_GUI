@@ -1,0 +1,9 @@
+000107:30Manana         
+000209:30Manana         
+000311:45Manana         
+000414:30Tarde          
+000517:00Tarde          
+000619:45Tarde          
+000721:00Noche          
+000822:00Noche          
+000923:45Noche          

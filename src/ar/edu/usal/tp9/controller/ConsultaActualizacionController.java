@@ -3,8 +3,11 @@ package ar.edu.usal.tp9.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
+import ar.edu.usal.tp9.model.dao.HotelesDao;
+import ar.edu.usal.tp9.model.dao.PasajerosDao;
 import ar.edu.usal.tp9.model.dao.TablasMaestrasDao;
 import ar.edu.usal.tp9.model.dto.Hoteles;
 import ar.edu.usal.tp9.model.dto.Pasajeros;
@@ -22,8 +25,8 @@ public class ConsultaActualizacionController implements ActionListener {
 	
 	public Object[] getPasajerosFromTxt() {
 
-		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
-		Iterator it = tablasMaestrasDao.getPasajeros().iterator();
+		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+		Iterator it = pasajerosDao.getPasajeros().iterator();
 		
 		ArrayList<String> nombresPasajeros = new ArrayList<String>();
 		nombresPasajeros.add("Seleccionar");
@@ -75,8 +78,8 @@ public class ConsultaActualizacionController implements ActionListener {
 
 	public Object[] getHotelesFromTxt() {
 		
-		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
-		Iterator it = tablasMaestrasDao.getHoteles().iterator();
+		HotelesDao hotelesDao = HotelesDao.getInstance();
+		Iterator it = hotelesDao.getHoteles().iterator();
 		
 		ArrayList<String> nombresHoteles = new ArrayList<String>();
 		nombresHoteles.add("Seleccionar");
@@ -90,4 +93,11 @@ public class ConsultaActualizacionController implements ActionListener {
 		return nombresHoteles.toArray();
 	}
 	
+	public Object[] getTurnosFromTxt() {
+		
+		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
+		HashMap turnosHorariosMap = tablasMaestrasDao.getTurnoHorariosMap();
+		
+		return turnosHorariosMap.keySet().toArray();
+	}
 }

@@ -1,17 +1,23 @@
 package ar.edu.usal.tp9.controller;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
+import ar.edu.usal.tp9.model.dao.HotelesDao;
+import ar.edu.usal.tp9.model.dao.PaquetesDao;
+import ar.edu.usal.tp9.model.dao.PasajerosDao;
 import ar.edu.usal.tp9.model.dao.TablasMaestrasDao;
 import ar.edu.usal.tp9.model.dto.Hoteles;
+import ar.edu.usal.tp9.model.dto.Paquetes;
+import ar.edu.usal.tp9.model.dto.PaquetesConEstadias;
 import ar.edu.usal.tp9.model.dto.Pasajeros;
-import ar.edu.usal.tp9.utils.Constants;
+import ar.edu.usal.tp9.utils.Validador;
 import ar.edu.usal.tp9.view.IngresoView;
 
 public class IngresoController implements ActionListener {
@@ -38,9 +44,12 @@ public class IngresoController implements ActionListener {
 				ingresoView.limpiar();
 
 		} else if ("Aceptar".equals(e.getActionCommand())) {
-
-//			ingresoView.validar(); //3 componentes distintos
-//			Guardar();
+			
+			if(ingresoView.validar()){
+				
+				this.guardarPaquete();	
+			}
+			
 //			implentar generacion de factura a partir de los datos guardados, a traves de interfaz?
 //			Mensaje si todo lo anterior esta ok:
 			if(true) {
@@ -79,22 +88,24 @@ public class IngresoController implements ActionListener {
 			
 		} else if ("Seleccionar".equals(e.getActionCommand())) {
 			
+			TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
+			
 			if (ingresoView.getComboHorariosIndex() == 1) {
 				ingresoView.getComboModel().removeAllElements();
-				for (int j = 0; j < Constants.strHorasManana.length; j++) {
-					ingresoView.getComboHoras().addItem(Constants.strHorasManana[j]);
+				for (int j = 0; j < tablasMaestrasDao.getTurnoHorariosMap().get("Manana").size(); j++) {
+					ingresoView.getComboHoras().addItem(tablasMaestrasDao.getTurnoHorariosMap().get("Manana").get(j));
 				}
 
 			} else if (ingresoView.getComboHorariosIndex() == 2) {
 				ingresoView.getComboModel().removeAllElements();
-				for (int j = 0; j < Constants.strHorasTarde.length; j++) {
-					ingresoView.getComboHoras().addItem(Constants.strHorasTarde[j]);
+				for (int j = 0; j < tablasMaestrasDao.getTurnoHorariosMap().get("Tarde").size(); j++) {
+					ingresoView.getComboHoras().addItem(tablasMaestrasDao.getTurnoHorariosMap().get("Tarde").get(j));
 				}
 	
 			} else if (ingresoView.getComboHorariosIndex() == 3) {
 				ingresoView.getComboModel().removeAllElements();
-				for (int j = 0; j < Constants.strHorasNoche.length; j++) {
-					ingresoView.getComboHoras().addItem(Constants.strHorasNoche[j]);
+				for (int j = 0; j < tablasMaestrasDao.getTurnoHorariosMap().get("Noche").size(); j++) {
+					ingresoView.getComboHoras().addItem(tablasMaestrasDao.getTurnoHorariosMap().get("Noche").get(j));
 				}
 	
 			} 
@@ -103,7 +114,54 @@ public class IngresoController implements ActionListener {
 						
 	}
 
-//	Falta hacer
+	private void guardarPaquete() {
+
+		Paquetes paquete;
+		
+		if(this.ingresoView.getCmbHoteles().getSelectedIndex() > 0){
+			
+			paquete = new PaquetesConEstadias();
+			
+			HotelesDao hotelesDao = HotelesDao.getInstance();
+			
+			((PaquetesConEstadias) paquete).setHotel(hotelesDao.getHotelByNombre(((String)this.ingresoView.getCmbHoteles().getSelectedItem()).trim()));
+			((PaquetesConEstadias) paquete).setEsPensionCompleta(this.ingresoView.getEsPensionCompleta().isSelected());
+			
+		}else{
+			
+			paquete = new Paquetes();
+		}
+		
+		Calendar fechaHoraSalida = Validador.stringToCalendar(this.ingresoView.getTxtFechaSalida().getText().trim(), "dd/MM/yyyy");
+		paquete.setFechaHoraSalida(fechaHoraSalida);
+		
+		String horaCombo = ((String)this.ingresoView.getComboHoras().getSelectedItem()).trim();
+		int hora = Integer.valueOf(horaCombo.substring(0, 2));
+		int minutos = Integer.valueOf(horaCombo.substring(3, 5));
+		Validador.setearHora(hora, minutos, fechaHoraSalida);
+		
+		double importe = Double.parseDouble(this.ingresoView.getTxtImporte().getText().trim());
+		paquete.setImporte(importe);
+		
+		ArrayList<String> localidades = (ArrayList<String>) this.ingresoView.getListaLocalidadesCopia().getSelectedValuesList();
+		paquete.setLocalidades(localidades);
+		
+		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+		Pasajeros pasajero = pasajerosDao.getPasajeroByNombre((String)(this.ingresoView.getCmbPasajeros().getSelectedItem()));
+		paquete.setPasajero(pasajero);
+		
+		paquete.setQuiereAbonoTransporteLocal(this.ingresoView.getQuiereAbonoTransporteLocal().isSelected());
+		paquete.setQuiereVisitasGuiadas(this.ingresoView.getQuiereVisitasGuiadas().isSelected());
+		paquete.setTieneSeguro(this.ingresoView.getGrpSeguro().getSelection().getActionCommand().trim().
+				equals("Si") ? true : false);
+		
+		PaquetesDao paquetesDao = PaquetesDao.getInstance();
+		paquetesDao.getPaquetes().add(paquete);
+		
+		paquetesDao.persistirInformacion();
+	}
+
+	//	Falta hacer
 	public double calcularImporte() {
 		return 0;
 	}
@@ -117,8 +175,8 @@ public class IngresoController implements ActionListener {
 
 	public Object[] getPasajerosFromTxt() {
 
-		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
-		Iterator it = tablasMaestrasDao.getPasajeros().iterator();
+		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+		Iterator it = pasajerosDao.getPasajeros().iterator();
 		
 		ArrayList<String> nombresPasajeros = new ArrayList<String>();
 		nombresPasajeros.add("Seleccionar");
@@ -134,8 +192,8 @@ public class IngresoController implements ActionListener {
 
 	public Object[] getHotelesFromTxt() {
 		
-		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
-		Iterator it = tablasMaestrasDao.getHoteles().iterator();
+		HotelesDao hotelesDao = HotelesDao.getInstance();
+		Iterator it = hotelesDao.getHoteles().iterator();
 		
 		ArrayList<String> nombresHoteles = new ArrayList<String>();
 		nombresHoteles.add("Seleccionar");
@@ -147,6 +205,14 @@ public class IngresoController implements ActionListener {
 		}
 		
 		return nombresHoteles.toArray();
+	}
+
+	public Object[] getTurnosFromTxt() {
+		
+		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
+		HashMap turnosHorariosMap = tablasMaestrasDao.getTurnoHorariosMap();
+		
+		return turnosHorariosMap.keySet().toArray();
 	}
 
 }

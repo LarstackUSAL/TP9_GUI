@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -17,18 +18,15 @@ public class TablasMaestrasDao {
 	private static TablasMaestrasDao tablasMaestrasDaoInstance = null;
 	
 	private ArrayList<String> localidades;
-	private ArrayList<Pasajeros> pasajeros;
-	private ArrayList<Hoteles> hoteles;
-	
+	private HashMap<String,ArrayList<String>> turnoHorariosMap;
+
 	private TablasMaestrasDao(){
 		
 		this.localidades = new ArrayList<String>();
-		this.pasajeros = new ArrayList<Pasajeros>();
-		this.hoteles = new ArrayList<Hoteles>();
+		this.turnoHorariosMap = new HashMap<String, ArrayList<String>>();
 		
 		this.loadLocalidades();
-		this.loadPasajeros();
-		this.loadHoteles();
+		this.loadHorariosViajes();
 	}
 
 	public static TablasMaestrasDao getInstance(){
@@ -75,89 +73,43 @@ public class TablasMaestrasDao {
 			
 			System.out.println("No se ha encontrado el archivo.");
 		}
-	}
-
-	private void loadPasajeros() {
-		
-		File clientesTxt = new File("./archivos/CLIENTES.txt");
-		Scanner clientesScanner;
-		
-		try {
-			
-			try {
-				clientesTxt.createNewFile();
-			
-			} catch (IOException e) {
-
-				System.out.println("Se ha verificado un error al cargar el archivo de clientes.");
-			}
-			
-			clientesScanner = new Scanner(clientesTxt);
-			
-			while(clientesScanner.hasNextLine()){
-				
-				String linea = clientesScanner.nextLine();
-				String[] clientesArray = linea.split(";");
-				
-				String nombreApellido = clientesArray[0].trim();
-				Calendar fechaNacimiento = Validador.stringToCalendar(clientesArray[1].trim(), "yyyyMMdd");
-				int dni = Integer.valueOf(clientesArray[2].trim());
-				String email = clientesArray[3].trim();
-				
-				this.pasajeros.add(new Pasajeros(nombreApellido, fechaNacimiento, dni, email));
-			}
-			
-			clientesScanner.close();
-			
-		}catch(InputMismatchException e){
-			
-			System.out.println("Se ha encontrado un tipo de dato insesperado.");
-			
-		}catch (FileNotFoundException e) {
-			
-			System.out.println("No se ha encontrado el archivo.");
-		}
-	}
+	}	
 	
-	private void loadHoteles() {
+	public void loadHorariosViajes(){
 		
-		File hotelesTxt = new File("./archivos/HOTELES.txt");
-		Scanner hotelesScanner;
+		File horariosTxt = new File("./archivos/HORARIOS.txt");
+		Scanner horariosScanner;
 		
 		try {
 			
 			try {
-				hotelesTxt.createNewFile();
+				horariosTxt.createNewFile();
 			
 			} catch (IOException e) {
 
-				System.out.println("Se ha verificado un error al cargar el archivo de hoteles.");
+				System.out.println("Se ha verificado un error al cargar el archivo de horarios.");
 			}
 			
-			hotelesScanner = new Scanner(hotelesTxt);
-			
-			while(hotelesScanner.hasNextLine()){
+			horariosScanner = new Scanner(horariosTxt);
+						
+			while(horariosScanner.hasNextLine()){
 				
-				Hoteles hotel = new Hoteles();
+				String linea = horariosScanner.nextLine();
+				int id = Integer.valueOf(linea.substring(0, 4));
+				String horario = linea.substring(4, 9).trim();
+				String turno = linea.substring(9, 24).trim();
 				
-				String linea = hotelesScanner.nextLine();
-				String[] lineaArray = linea.split(";");
-
-				hotel.setNombre(lineaArray[0].trim());
-				hotel.setEstrellas(Integer.valueOf(lineaArray[1].trim()));				
-				
-				ArrayList<String> localidades = new ArrayList<String>();
-				
-				for (int i = 2; i < lineaArray.length; i++) {
+				if(this.turnoHorariosMap.get(turno) != null){
 					
-					localidades.add(lineaArray[i].trim());
-				}				
-				hotel.setLocalidades(localidades);
-				
-				this.hoteles.add(hotel);
+					this.turnoHorariosMap.get(turno).add(horario);
+				}else{
+					
+					this.turnoHorariosMap.put(turno, new ArrayList<String>());
+					this.turnoHorariosMap.get(turno).add(horario);
+				}
 			}
 			
-			hotelesScanner.close();
+			horariosScanner.close();
 			
 		}catch(InputMismatchException e){
 			
@@ -170,16 +122,12 @@ public class TablasMaestrasDao {
 	}
 
 	public ArrayList<String> getLocalidades() {
+		
 		return localidades;
 	}
 
-	public ArrayList<Pasajeros> getPasajeros() {
-		return pasajeros;
-	}
-
-	public ArrayList<Hoteles> getHoteles() {
+	public HashMap<String, ArrayList<String>> getTurnoHorariosMap() {
 		
-		return hoteles;
+		return turnoHorariosMap;
 	}
-
 }
