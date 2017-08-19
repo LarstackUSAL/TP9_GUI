@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import ar.edu.usal.tp9.model.dao.FacturasDao;
+import ar.edu.usal.tp9.model.interfaces.ICalculoImporte;
 import ar.edu.usal.tp9.utils.Constants;
 
 public class Paquetes {
 
 	private ArrayList<String> localidades;
 	private Calendar fechaHoraSalida;
-	private Calendar fechaHoraLlegada;
+	private int cantidadDias;
 	private double importe;
 	private boolean tieneSeguro;
 	private Pasajeros pasajero;
@@ -22,13 +23,13 @@ public class Paquetes {
 	public Paquetes(){}
 	
 	public Paquetes(int id, ArrayList<String> localidades, Calendar fechaHoraSalida,
-			Calendar fechaHoraLlegada, double importe, boolean tieneSeguro,
+			int cantidadDias, double importe, boolean tieneSeguro,
 			Pasajeros pasajero, boolean quiereVisitasGuiadas, boolean quiereAbonoTransporteLocal) {
 		super();
 		this.id = id;
 		this.localidades = localidades;
 		this.fechaHoraSalida = fechaHoraSalida;
-		this.fechaHoraLlegada = fechaHoraLlegada;
+		this.setCantidadDias(cantidadDias);
 		this.importe = importe;
 		this.tieneSeguro = tieneSeguro;
 		this.pasajero = pasajero;
@@ -51,14 +52,6 @@ public class Paquetes {
 
 	public void setFechaHoraSalida(Calendar fechaHoraSalida) {
 		this.fechaHoraSalida = fechaHoraSalida;
-	}
-
-	public Calendar getFechaHoraLlegada() {
-		return fechaHoraLlegada;
-	}
-
-	public void setFechaHoraLlegada(Calendar fechaHoraLlegada) {
-		this.fechaHoraLlegada = fechaHoraLlegada;
 	}
 
 	public double getImporte() {
@@ -135,5 +128,13 @@ public class Paquetes {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getCantidadDias() {
+		return cantidadDias;
+	}
+
+	public void setCantidadDias(int cantidadDias) {
+		this.cantidadDias = cantidadDias;
 	}
 }

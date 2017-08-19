@@ -3,6 +3,7 @@ package ar.edu.usal.tp9.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -543,37 +544,15 @@ public class Validador {
 		return horaTmp + ":" + minutos;
 	}
 	
-//	public static LinkedHashMap<String, Integer> sortHashMapStringInteger(HashMap<String, Integer> parametroMap) {
-//	    
-//		List<String> keys = new ArrayList<String>(parametroMap.keySet());
-//	    List<Integer> values = new ArrayList<Integer>(parametroMap.values());
-//	    Collections.sort(values);
-//	    Collections.sort(keys);
-//
-//	    LinkedHashMap<String, Integer> mapOrdenado = new LinkedHashMap<String, Integer>();
-//
-//	    Iterator<Integer> valueIterator = values.iterator();
-//	    
-//	    while (valueIterator.hasNext()) {
-//	        
-//	    	Integer val = valueIterator.next();
-//	        Iterator<String> keyIterator = keys.iterator();
-//
-//	        while (keyIterator.hasNext()) {
-//	            
-//	        	String key = keyIterator.next();
-//	            Integer comp1 = parametroMap.get(key);
-//	            Integer comp2 = val;
-//
-//	            if (comp1.equals(comp2)) {
-//	            	
-//	            	keyIterator.remove();
-//	                mapOrdenado.put(key, val);
-//	                break;
-//	            }
-//	        }
-//	    }
-//	    return mapOrdenado;
-//	}
-
+	public static String ListToString(ArrayList<String> listaString){
+		
+		String listaConcatenada = "";
+		
+		for (int i = 0; i < listaString.size(); i++) {
+			
+			listaConcatenada = listaConcatenada + listaString.get(i) + ",";
+		}
+		
+		return listaConcatenada.substring(0,(listaConcatenada.length()-1));
+	}
 }

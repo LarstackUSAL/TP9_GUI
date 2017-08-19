@@ -59,14 +59,7 @@ public class HotelesDao {
 
 				hotel.setNombre(lineaArray[0].trim());
 				hotel.setEstrellas(Integer.valueOf(lineaArray[1].trim()));				
-				
-				ArrayList<String> localidades = new ArrayList<String>();
-				
-				for (int i = 2; i < lineaArray.length; i++) {
-					
-					localidades.add(lineaArray[i].trim());
-				}				
-				hotel.setLocalidades(localidades);
+				hotel.setImporte(Double.valueOf(lineaArray[2].trim()));
 				
 				this.hoteles.add(hotel);
 			}

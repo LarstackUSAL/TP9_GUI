@@ -2,76 +2,118 @@ package ar.edu.usal.tp9.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.table.DefaultTableModel;
 
+import ar.edu.usal.tp9.exception.PaqueteNoEncontradoException;
+import ar.edu.usal.tp9.model.dao.PaquetesDao;
+import ar.edu.usal.tp9.model.dao.PasajerosDao;
+import ar.edu.usal.tp9.model.dto.Paquetes;
+import ar.edu.usal.tp9.model.dto.PaquetesConEstadias;
+import ar.edu.usal.tp9.model.dto.Pasajeros;
+import ar.edu.usal.tp9.utils.Validador;
 import ar.edu.usal.tp9.view.ConsultaMasivaView;
 
 public class ConsultaMasivaController implements ActionListener {
-	
+
 	private ConsultaMasivaView consultaMasivaView;
 
 	public void setView(ConsultaMasivaView consultaMasivaView) {
 
 		this.consultaMasivaView = consultaMasivaView;
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		if ("Consultar".equals(e.getActionCommand())) {
-		
-//			ArrayList <String[]> lista = new ArrayList <String[]> ();
-//			
-//			Archivos a = new Archivos("C:\\Archivos","Ingresos.txt");
-			int contadorReg = 0;
-//			lista = a.LeerSeparadoCaracter(";");
-//			consultaMasivaView.getContadorRegTotal().setText(String.valueOf(lista.size()));
-			
-			DefaultTableModel tableModel = new DefaultTableModel();
-			tableModel = (DefaultTableModel)consultaMasivaView.getTablaResultado().getModel();
-			
-			this.addColumnasTabla(tableModel);
-			
-			String pasajero = consultaMasivaView.getPasajero().getText();
-			
-//			for(String[] registro: lista) {
-//				
-//				if (registro[0].contains(pasajero)) {
-//					
-//					contadorReg++;
-//					tableModel.addRow(registro);
-//					
-//				}
-//				
-//				if (pasajero == "") {
-//					
-//					contadorReg++;
-//					tableModel.addRow(registro);
-//				}
-//					
-//			}
-			
-			consultaMasivaView.getContadorRegBusqueda().setText(String.valueOf(contadorReg));
-					
-		}
-		
-	}
 
-	private void addColumnasTabla(DefaultTableModel tableModel) {
-		
-		tableModel.addColumn("Pasajero");
-		tableModel.addColumn("Localidad/es");
-		tableModel.addColumn("Fecha/Hora Salida");
-		tableModel.addColumn("Fecha/Hora Llegada");
-		tableModel.addColumn("Seguro");
-		tableModel.addColumn("Abono Transporte");
-		tableModel.addColumn("Guia");
-		tableModel.addColumn("Hotel/es");
-		tableModel.addColumn("Pension completa");
-		tableModel.addColumn("Importe");
-		
+			ArrayList<Paquetes> paquetesEncontrados = new ArrayList<Paquetes>();
+			ArrayList<String[]> registros = new ArrayList<String[]>();
+			String cantidadRegistros = "";
+			String cantidadRegistrosTotales = "";
+
+			String pasajeroTxt = consultaMasivaView.getPasajero().getText();
+			PaquetesDao paquetesDao = PaquetesDao.getInstance();
+
+			if(pasajeroTxt != null && pasajeroTxt.trim().isEmpty()){
+
+				PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+				Pasajeros pasajeroEncontrado = pasajerosDao.buscarPasajero(pasajeroTxt.trim());
+
+				paquetesEncontrados = paquetesDao.getPaqueteByPasajero(pasajeroEncontrado);
+
+				if(paquetesEncontrados != null && !paquetesEncontrados.isEmpty()){
+
+					for (int i = 0; i < paquetesEncontrados.size(); i++) {
+
+						Paquetes paqueteIterado = paquetesEncontrados.get(i);
+
+						String hotelString = "";
+						String pensionCompleta = "";
+
+						if(paqueteIterado instanceof PaquetesConEstadias){
+
+							hotelString = ((PaquetesConEstadias) paqueteIterado).getHotel().getNombre();
+							pensionCompleta = ((PaquetesConEstadias) paqueteIterado).isEsPensionCompleta() ? "SI" : "NO";
+						}
+
+						String[] registro = {
+								paqueteIterado.getPasajero().getNombreApellido().trim(),					
+								Validador.ListToString(paqueteIterado.getLocalidades()),
+								Validador.calendarToString(paqueteIterado.getFechaHoraSalida(), "dd/MM/yyyy"),
+								String.valueOf(paqueteIterado.getCantidadDias()),
+								paqueteIterado.isTieneSeguro() ? "SI" : "NO",
+										paqueteIterado.isQuiereAbonoTransporteLocal() ? "SI" : "NO",
+												paqueteIterado.isQuiereVisitasGuiadas() ? "SI" : "NO",
+														hotelString,
+														pensionCompleta,
+														String.valueOf(paqueteIterado.getImporte())
+						};
+
+						registros.add(registro);
+					}
+				}
+			}else{
+
+				ArrayList<Paquetes> paquetesList = paquetesDao.getPaquetes();
+
+				for (int i = 0; i < paquetesList.size(); i++) {
+
+					Paquetes paqueteIterado = paquetesList.get(i);
+
+					String hotelString = "";
+					String pensionCompleta = "";
+
+					if(paqueteIterado instanceof PaquetesConEstadias){
+
+						hotelString = ((PaquetesConEstadias) paqueteIterado).getHotel().getNombre();
+						pensionCompleta = ((PaquetesConEstadias) paqueteIterado).isEsPensionCompleta() ? "SI" : "NO";
+					}
+
+					String[] registro = {
+							paqueteIterado.getPasajero().getNombreApellido().trim(),					
+							Validador.ListToString(paqueteIterado.getLocalidades()),
+							Validador.calendarToString(paqueteIterado.getFechaHoraSalida(), "dd/MM/yyyy"),
+							String.valueOf(paqueteIterado.getCantidadDias()),
+							paqueteIterado.isTieneSeguro() ? "SI" : "NO",
+									paqueteIterado.isQuiereAbonoTransporteLocal() ? "SI" : "NO",
+											paqueteIterado.isQuiereVisitasGuiadas() ? "SI" : "NO",
+													hotelString,
+													pensionCompleta,
+													String.valueOf(paqueteIterado.getImporte())
+					};
+
+					registros.add(registro);
+				}
+			}
+			cantidadRegistros = String.valueOf(registros.size());
+			cantidadRegistrosTotales = String.valueOf(paquetesDao.getPaquetes().size());
+
+			this.consultaMasivaView.mostrarRegistros(registros, cantidadRegistros, cantidadRegistrosTotales);	
+		}
 	}
 
 }

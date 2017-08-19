@@ -21,48 +21,48 @@ import ar.edu.usal.tp9.utils.Validador;
 public class PaquetesDao {
 
 	private static PaquetesDao paquetesDaoInstance = null;
-	
+
 	private ArrayList<Paquetes> paquetes;
 	private static int nextIdPaquetes = 1;
 
 	private PaquetesDao(){
-		
+
 		this.paquetes = new ArrayList<Paquetes>();
-		 
+
 		this.loadPaquetes();
 	}
 
 	public static PaquetesDao getInstance(){
-		
+
 		if(paquetesDaoInstance==null){
-			
+
 			paquetesDaoInstance = new PaquetesDao();
 		}
-		
+
 		return paquetesDaoInstance;
 	}
-	
+
 	private void loadPaquetes() {
-		
+
 		File paquetesTxt = new File("./archivos/PAQUETES.txt");
 		Scanner paquetesScanner;
-		
+
 		try {
-			
+
 			try {
 				paquetesTxt.createNewFile();
-			
+
 			} catch (IOException e) {
 
 				System.out.println("Se ha verificado un error al cargar el archivo de paquetes.");
 			}
-			
+
 			paquetesScanner = new Scanner(paquetesTxt);
-			
+
 			while(paquetesScanner.hasNextLine()){
-				
+
 				Paquetes paquete;
-				
+
 				String linea = paquetesScanner.nextLine();
 				String[] lineaArray = linea.split(";");
 
@@ -71,52 +71,55 @@ public class PaquetesDao {
 
 				//fecha
 				Calendar fechaHoraSalida = Validador.stringToCalendar(lineaArray[1].trim(), "dd/MM/yyyy");
-				
+
 				//hora
 				String horaCombo = lineaArray[2].trim();
 				int hora = Integer.valueOf(horaCombo.substring(0, 2));
 				int minutos = Integer.valueOf(horaCombo.substring(2, 4)); //hhmm
 				Validador.setearHora(hora, minutos, fechaHoraSalida);
-				
+
 				//importe
 				double importe = Double.parseDouble(lineaArray[3].trim());
-				
+
 				//pasajero
 				PasajerosDao pasajerosDao = PasajerosDao.getInstance();
 				Pasajeros pasajero = pasajerosDao.getPasajeroByNombre(lineaArray[4].trim());
-				
+
 				//abono transporte local
 				boolean quiereAbonoTransporteLocal = Boolean.parseBoolean(lineaArray[5].trim());
-				
+
 				//visitas guiadas
 				boolean quiereVisitasGuiadas = Boolean.parseBoolean(lineaArray[6].trim());
-				
+
 				//seguro
 				boolean tieneSeguro = Boolean.parseBoolean(lineaArray[7].trim());
-				
+
 				//localidades
 				ArrayList<String> localidades = this.loadLocalidades(idPaquete);
-				
+
+				//cantidad dias
+				int cantidadDias = Integer.valueOf(lineaArray[8].trim());
+
 				//hotel
 				Hoteles hotel = null;
 				boolean esPensionCompleta = false;
 				HotelesDao hotelesDao = HotelesDao.getInstance();
-				if(lineaArray[8] != null){
-					
-					hotel = hotelesDao.getHotelByNombre(lineaArray[8].trim());
-					
+				if(lineaArray[9] != null){
+
+					hotel = hotelesDao.getHotelByNombre(lineaArray[9].trim());
+
 					//pension completa
-					esPensionCompleta = Boolean.parseBoolean(lineaArray[9].trim());
-					
+					esPensionCompleta = Boolean.parseBoolean(lineaArray[10].trim());
+
 					paquete = new PaquetesConEstadias();
 					((PaquetesConEstadias)paquete).setHotel(hotel);
 					((PaquetesConEstadias)paquete).setEsPensionCompleta(esPensionCompleta);
-					
+
 				}else{
-					
+
 					paquete = new Paquetes();
 				}
-				
+
 				paquete.setQuiereAbonoTransporteLocal(quiereAbonoTransporteLocal);
 				paquete.setQuiereVisitasGuiadas(quiereVisitasGuiadas);
 				paquete.setTieneSeguro(tieneSeguro);	
@@ -124,89 +127,90 @@ public class PaquetesDao {
 				paquete.setImporte(importe);
 				paquete.setLocalidades(localidades);				
 				paquete.setPasajero(pasajero);
-				
+				paquete.setCantidadDias(cantidadDias);
+
 				this.paquetes.add(paquete);
 			}
-			
+
 			paquetesScanner.close();
-			
+
 		}catch(InputMismatchException e){
-			
+
 			System.out.println("Se ha encontrado un tipo de dato insesperado.");
-			
+
 		}catch (FileNotFoundException e) {
-			
+
 			System.out.println("No se ha encontrado el archivo.");
 		}
 	}
-	
+
 	private ArrayList<String> loadLocalidades(int idPaquete) {
-		
+
 		File localidadesTxt = new File("./archivos/PAQUETES_LOCALIDADES.txt");
 		Scanner localidadesScanner;
-		
+
 		ArrayList<String> localidadesPaqueteList = new ArrayList<>();
-		
+
 		try {
-			
+
 			try {
 				localidadesTxt.createNewFile();
-			
+
 			} catch (IOException e) {
 
 				System.out.println("Se ha verificado un error al cargar el archivo de localidades.");
 			}
-			
+
 			localidadesScanner = new Scanner(localidadesTxt);
-			
+
 			while(localidadesScanner.hasNextLine()){
-				
+
 				String lineaPaqueteLocalidades = localidadesScanner.nextLine().trim();
 				String[] arrayPaqueteLocalidades = lineaPaqueteLocalidades.split(";");
-				
+
 				if(Integer.parseInt(arrayPaqueteLocalidades[0].trim()) == idPaquete){
-					
+
 					for (int i = 1; i < arrayPaqueteLocalidades.length; i++) {
-						
+
 						localidadesPaqueteList.add(arrayPaqueteLocalidades[i].trim());
 					}
-					
+
 					break;
 				}
 			}
-			
+
 			localidadesScanner.close();
-			
+
 		}catch(InputMismatchException e){
-			
+
 			System.out.println("Se ha encontrado un tipo de dato insesperado.");
-			
+
 		}catch (FileNotFoundException e) {
-			
+
 			System.out.println("No se ha encontrado el archivo.");
 		}
-		
+
 		return localidadesPaqueteList;
 	}
 
 	public boolean persistirPaquetes() {
-		
+
 		boolean persistenciaOk = false;
-		
+
 		FileWriter paquetesFile;
 		PrintWriter paquetesOut;
-		
+
 		FileWriter localidadesPaquetesFile;
 		PrintWriter localidadesPaquetesOut;
-		
+
 		FileWriter facturasFile;
 		PrintWriter facturasOut;
 
 		try {
-		
+
 			paquetesFile = new FileWriter("./archivos/PAQUETES.txt");
 			paquetesOut = new PrintWriter(paquetesFile);
-			
+
 			localidadesPaquetesFile = new FileWriter("./archivos/PAQUETES_LOCALIDADES.txt");
 			localidadesPaquetesOut = new PrintWriter(localidadesPaquetesFile);
 
@@ -219,45 +223,46 @@ public class PaquetesDao {
 
 				String fecha = Validador.calendarToString(paquete.getFechaHoraSalida(), "dd/MM/yyyy");
 				String hora = Validador.HoraCalendarToString(paquete.getFechaHoraSalida());
-				
+
 				String paqueteString =
-								paquete.getId() + ";" +
+						paquete.getId() + ";" +
 								fecha + ";" +
 								hora + ";" +
 								String.valueOf(paquete.getImporte()) + ";" +
 								paquete.getPasajero().getNombreApellido().trim() + ";" +
 								String.valueOf(paquete.isQuiereAbonoTransporteLocal())+ ";" +
 								String.valueOf(paquete.isQuiereVisitasGuiadas())+ ";" +
-								String.valueOf(paquete.isTieneSeguro())+";";
-								
+								String.valueOf(paquete.isTieneSeguro())+ ";" +
+								String.valueOf(paquete.getCantidadDias());
+
 				if(paquete instanceof PaquetesConEstadias){
-									
+
 					paqueteString += ((PaquetesConEstadias)paquete).getHotel().getNombre().trim();
 					paqueteString += String.valueOf(((PaquetesConEstadias)paquete).isEsPensionCompleta());
 				}
 
 				paquetesOut.println(paqueteString);
-				
+
 				String localidades = String.valueOf(paquete.getId());
-				
+
 				for (int j = 0; j < paquete.getLocalidades().size(); j++) {
-					
+
 					localidades += ";";
 					localidades += paquete.getLocalidades().get(j).trim();
 				}
-				
+
 				//Se actualiza el archivo de localidades del paquete.
 				localidadesPaquetesOut.println(localidades);
 
 				//Se actualiza el archivo de facturas.
 				facturasOut.println(
 						String.valueOf(paquete.getFacturas().getNumero()) + ";" +
-						String.valueOf(paquete.getId()) + ";" +
-						Validador.calendarToString(paquete.getFacturas().getFecha(), "dd/MM/yyyy") + ";" +
-						paquete.getFacturas().getPasajero().getNombreApellido() + ";" +
-						String.valueOf(paquete.getFacturas().getTipo()) + ";" +
-						String.valueOf(paquete.getFacturas().getImporte())
-				);				
+								String.valueOf(paquete.getId()) + ";" +
+								Validador.calendarToString(paquete.getFacturas().getFecha(), "dd/MM/yyyy") + ";" +
+								paquete.getFacturas().getPasajero().getNombreApellido() + ";" +
+								String.valueOf(paquete.getFacturas().getTipo()) + ";" +
+								String.valueOf(paquete.getFacturas().getImporte())
+						);				
 			}
 
 			localidadesPaquetesOut.close();
@@ -282,12 +287,12 @@ public class PaquetesDao {
 			idFacturasFile.close();
 
 			persistenciaOk = true;
-			
+
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
-		
+
 		return persistenciaOk;
 	}
 
@@ -330,20 +335,20 @@ public class PaquetesDao {
 	public Paquetes getPaqueteById(int id) {
 
 		Iterator paquetesIterator = this.paquetes.iterator();
-		
+
 		while (paquetesIterator.hasNext()) {
-			
+
 			Paquetes paquete = (Paquetes) paquetesIterator.next();
-			
+
 			if(paquete.getId() == id){
-				
+
 				return paquete;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public static int getNextIdPaquetes() {
 
 		nextIdPaquetes++;
@@ -362,24 +367,42 @@ public class PaquetesDao {
 
 	public Paquetes getPaqueteByPasajeroLocalidad(Pasajeros pasajero,
 			String localidadString) throws PaqueteNoEncontradoException {
-		
+
 		for (int i = 0; i < this.paquetes.size(); i++) {
-			
+
 			ArrayList<String> localidades = paquetes.get(i).getLocalidades();
 			Pasajeros pasajeroIterado = paquetes.get(i).getPasajero();  
-			
+
 			if(pasajeroIterado == pasajero){
-				
+
 				for (int j = 0; j < localidades.size(); j++) {
 
 					if(localidades.get(j).equals(localidadString)){
-						
+
 						return paquetes.get(i);
 					}
 				}
 			}
 		}
-		
+
 		throw new PaqueteNoEncontradoException();
+	}
+
+	public ArrayList<Paquetes> getPaqueteByPasajero(Pasajeros pasajero) {
+
+		ArrayList<Paquetes> paquetesArray = new ArrayList<Paquetes>();
+
+		for (int i = 0; i < this.paquetes.size(); i++) {
+
+			Pasajeros pasajeroIterado = paquetes.get(i).getPasajero();  
+
+			if(pasajeroIterado == pasajero){
+
+				paquetesArray.add(paquetes.get(i));
+
+			}
+		}
+
+		return paquetesArray;
 	}
 }

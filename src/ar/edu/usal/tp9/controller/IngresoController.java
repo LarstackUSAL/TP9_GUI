@@ -7,7 +7,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 
 import ar.edu.usal.tp9.model.dao.HotelesDao;
 import ar.edu.usal.tp9.model.dao.PaquetesDao;
@@ -17,10 +19,11 @@ import ar.edu.usal.tp9.model.dto.Hoteles;
 import ar.edu.usal.tp9.model.dto.Paquetes;
 import ar.edu.usal.tp9.model.dto.PaquetesConEstadias;
 import ar.edu.usal.tp9.model.dto.Pasajeros;
+import ar.edu.usal.tp9.model.interfaces.ICalculoImporte;
 import ar.edu.usal.tp9.utils.Validador;
 import ar.edu.usal.tp9.view.IngresoView;
 
-public class IngresoController implements ActionListener {
+public class IngresoController implements ActionListener, ICalculoImporte {
 	
 	private IngresoView ingresoView;
 
@@ -35,15 +38,22 @@ public class IngresoController implements ActionListener {
 		
 		if ("Cancelar".equals(e.getActionCommand())) {
 			
-//			int rta = JOptionPane.showConfirmDialog((Component)e.getSource(, "Los datos seran borrados. Confirma?",
-//					"Confirmacion", JOptionPane.OK_CANCEL_OPTION);
 			int rta = JOptionPane.showConfirmDialog(null, "Los datos seran borrados. Confirma?", 
 					"Confirmacion", JOptionPane.OK_CANCEL_OPTION);
 
 			if (rta == JOptionPane.YES_OPTION) 
 				ingresoView.limpiar();
 
-		} else if ("Aceptar".equals(e.getActionCommand())) {
+		} else if ("Calcular".equals(e.getActionCommand())) {
+			
+			if(ingresoView.validar()){
+				
+				double importe = this.calcularImporte();
+				
+				this.ingresoView.mostrarImporte(importe);
+			}
+			
+		}else if ("Aceptar".equals(e.getActionCommand())) {
 			
 			boolean persistenciaOk = false;
 			
@@ -134,7 +144,9 @@ public class IngresoController implements ActionListener {
 		}
 
 		paquete.setId(PaquetesDao.getNextIdPaquetes());
-
+		
+		paquete.setCantidadDias(Integer.valueOf(this.ingresoView.getTxtCantidadDias().getText()));
+		
 		Calendar fechaHoraSalida = Validador.stringToCalendar(this.ingresoView.getTxtFechaSalida().getText().trim(), "dd/MM/yyyy");
 		paquete.setFechaHoraSalida(fechaHoraSalida);
 		
@@ -146,7 +158,13 @@ public class IngresoController implements ActionListener {
 		double importe = Double.parseDouble(this.ingresoView.getTxtImporte().getText().trim());
 		paquete.setImporte(importe);
 		
-		ArrayList<String> localidades = (ArrayList<String>) this.ingresoView.getListaLocalidadesCopia().getSelectedValuesList();
+		ArrayList<String> localidades = new ArrayList<String>(); 
+		ListModel model = this.ingresoView.getListaLocalidadesCopia().getModel();
+		for (int i = 0; i < model.getSize(); i++) {
+			
+			localidades.add((String) model.getElementAt(i));
+		}
+		
 		paquete.setLocalidades(localidades);
 		
 		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
@@ -165,11 +183,6 @@ public class IngresoController implements ActionListener {
 		paquetesDao.getPaquetes().add(paquete);
 		
 		return paquetesDao.persistirPaquetes();
-	}
-
-	//	Falta hacer
-	public double calcularImporte() {
-		return 0;
 	}
 
 	public Object[] getLocalidadesFromTxt() {
@@ -221,4 +234,31 @@ public class IngresoController implements ActionListener {
 		return turnosHorariosMap.keySet().toArray();
 	}
 
+	@Override
+	public double calcularImporte() {
+
+		double importeTotal = 0;
+		
+		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
+		HashMap<String, Double> localidadesImportesMap = tablasMaestrasDao.getLocalidadesImportesMap();
+		ListModel modelo = this.ingresoView.getModelo();
+		
+		ArrayList<String> localidadesSeleccionadas = new ArrayList<String>();
+		
+		for (int i = 0; i < modelo.getSize(); i++) {
+			
+			localidadesSeleccionadas.add((String)modelo.getElementAt(i));
+		}
+		
+		double totalImporteLocalidades = 0;
+
+		for (int i = 0; i < localidadesSeleccionadas.size(); i++) {
+			
+			totalImporteLocalidades += localidadesImportesMap.get(localidadesSeleccionadas.get(i));
+		}
+		
+		importeTotal = importeTotal + totalImporteLocalidades; //seguir sumando las demas cosas
+		
+		return importeTotal; //LAS MISMAS COSAS QUE SE HACEN ACA HAY QUE AGREGARLAS A CONSULTA
+	}
 }

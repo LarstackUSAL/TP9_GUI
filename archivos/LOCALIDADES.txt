@@ -1,10 +1,10 @@
-Santa Fe
-Corrientes
-San Juan
-Cordoba
-Misiones
-Punta del Este
-Santiago
-Quito
-Miami
-Rio de Janiero
+Santa Fe;3500
+Corrientes;4500
+San Juan;4500
+Cordoba;3000
+Misiones;5000
+Punta del Este;5500
+Santiago;6000
+Quito;10300
+Miami;15000
+Rio de Janiero;7900

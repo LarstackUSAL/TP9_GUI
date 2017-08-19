@@ -1,3 +1,3 @@
-Hoteles Sheraton;5;5700;Cordoba;Punta del Este;Miami;Rio de Janiero
-Hoteles Hilton;5;7800;Corrientes;San Juan;Cordoba;Misiones;Punta del Este;Miami;Rio de Janeiro
-Hoteles All;3;1100;Santa Fé;Corrientes;San Juan;Cordoba;Misiones;Punta del Este;Santiago;Quito;Miami;Rio de Janiero
+Hoteles Sheraton;5;5700
+Hoteles Hilton;5;7800
+Hoteles All;3;1100

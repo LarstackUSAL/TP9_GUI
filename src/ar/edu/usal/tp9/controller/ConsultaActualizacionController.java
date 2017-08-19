@@ -3,8 +3,12 @@ package ar.edu.usal.tp9.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 
 import ar.edu.usal.tp9.exception.PaqueteNoEncontradoException;
 import ar.edu.usal.tp9.model.dao.HotelesDao;
@@ -15,10 +19,11 @@ import ar.edu.usal.tp9.model.dto.Hoteles;
 import ar.edu.usal.tp9.model.dto.Paquetes;
 import ar.edu.usal.tp9.model.dto.PaquetesConEstadias;
 import ar.edu.usal.tp9.model.dto.Pasajeros;
+import ar.edu.usal.tp9.model.interfaces.ICalculoImporte;
 import ar.edu.usal.tp9.utils.Validador;
 import ar.edu.usal.tp9.view.ConsultaActualizacionView;
 
-public class ConsultaActualizacionController implements ActionListener {
+public class ConsultaActualizacionController implements ActionListener, ICalculoImporte {
 	
 	private ConsultaActualizacionView consultaActualizacionView;
 
@@ -79,6 +84,7 @@ public class ConsultaActualizacionController implements ActionListener {
 					pensionCompleta = ((PaquetesConEstadias)paqueteEncontrado).isEsPensionCompleta();
 				}
 				
+				this.consultaActualizacionView.setIdPaqueteEncontrado(paqueteEncontrado.getId());
 				this.consultaActualizacionView.fillForm(
 						paqueteEncontrado.getPasajero().getNombreApellido(),
 						paqueteEncontrado.getLocalidades().toArray(),
@@ -98,17 +104,129 @@ public class ConsultaActualizacionController implements ActionListener {
 			}
 					
 		} else if ("Modificacion".equals(e.getActionCommand())) {
-//			 y si hace click en modificar se habilitan
-			
+
+			this.consultaActualizacionView.ocultarVisibilizarComponentesVentana(
+					this.consultaActualizacionView.getComponentesPaqueteEncontrado(), true, true);
 			
 		} else if ("Anulacion".equals(e.getActionCommand())) {
 			
+			int rta = JOptionPane.showConfirmDialog(null, "Quiere borrar el paquete?", 
+					"Confirmacion", JOptionPane.OK_CANCEL_OPTION);
+
+			if (rta == JOptionPane.YES_OPTION){
+			
+				PaquetesDao paquetesDao = PaquetesDao.getInstance();
+				Paquetes paquete = paquetesDao.getPaqueteById(this.consultaActualizacionView.getIdPaqueteEncontrado());
+				paquetesDao.getPaquetes().remove(paquete);
+				
+				boolean persistenciaOk = paquetesDao.persistirPaquetes();
+				
+				if(persistenciaOk) {
+
+					this.consultaActualizacionView.mostrarMensajeDialog("Datos guardados con exito!", "Exito");
+					this.consultaActualizacionView.limpiar();
+					this.consultaActualizacionView.ocultarVisibilizarComponentesVentana(
+							this.consultaActualizacionView.getComponentesPaqueteEncontrado(), false, false);
+				}else{
+					
+					this.consultaActualizacionView.mostrarMensajeDialog("Se ha verificado un error de persistencia.", "ERROR");
+				}
+			}
+		} else if ("Calcular".equals(e.getActionCommand())) {
+			
+			if(this.consultaActualizacionView.validar()){
+				
+				double importe = this.calcularImporte();
+				
+				this.consultaActualizacionView.mostrarImporte(importe);
+			}
+			
+		}else if ("Aceptar".equals(e.getActionCommand())) {
+			
+			PaquetesDao paquetesDao = PaquetesDao.getInstance();
+			Paquetes paquete = paquetesDao.getPaqueteById(this.consultaActualizacionView.getIdPaqueteEncontrado());
+			
+			boolean persistenciaOk = false;
+			
+			if(this.consultaActualizacionView.validar()){
+				
+				persistenciaOk = this.guardarPaquete(paquete);
+			}
+
+			if(persistenciaOk) {
+
+				this.consultaActualizacionView.mostrarMensajeDialog("Datos guardados con exito!", "Exito");
+			}else{
+				
+				this.consultaActualizacionView.mostrarMensajeDialog("Se ha verificado un error de persistencia.", "ERROR");
+			}
+			
+		} else if ("Cancelar".equals(e.getActionCommand())) {
 			
 			
+			int rta = JOptionPane.showConfirmDialog(null, "Los datos seran borrados. Confirma?", 
+					"Confirmacion", JOptionPane.OK_CANCEL_OPTION);
+
+			if (rta == JOptionPane.YES_OPTION)
+				this.consultaActualizacionView.limpiar();
 		}
-		
 	}
 
+	private boolean guardarPaquete(Paquetes paquete) {
+		
+		if(this.consultaActualizacionView.getCmbHoteles().getSelectedIndex() > 0){
+			
+			if(!(paquete instanceof PaquetesConEstadias)){
+				
+				PaquetesDao paquetesDao = PaquetesDao.getInstance();
+				paquetesDao.getPaquetes().remove(paquete);
+				
+				paquete = new PaquetesConEstadias();
+			}
+			
+			HotelesDao hotelesDao = HotelesDao.getInstance();
+			
+			((PaquetesConEstadias) paquete).setHotel(hotelesDao.getHotelByNombre(((String)this.consultaActualizacionView.getCmbHoteles().getSelectedItem()).trim()));
+			((PaquetesConEstadias) paquete).setEsPensionCompleta(this.consultaActualizacionView.getEsPensionCompleta().isSelected());
+			
+		}
+
+		paquete.setId(PaquetesDao.getNextIdPaquetes());
+
+		paquete.setCantidadDias(Integer.valueOf(this.consultaActualizacionView.getTxtCantidadDias().getText()));
+
+		Calendar fechaHoraSalida = Validador.stringToCalendar(this.consultaActualizacionView.getTxtFechaSalida().getText().trim(), "dd/MM/yyyy");
+		paquete.setFechaHoraSalida(fechaHoraSalida);
+		
+		String horaCombo = ((String)this.consultaActualizacionView.getComboHoras().getSelectedItem()).trim();
+		int hora = Integer.valueOf(horaCombo.substring(0, 2));
+		int minutos = Integer.valueOf(horaCombo.substring(3, 5));
+		Validador.setearHora(hora, minutos, fechaHoraSalida);
+		
+		double importe = Double.parseDouble(this.consultaActualizacionView.getTxtImporte().getText().trim());
+		paquete.setImporte(importe);
+		
+		ArrayList<String> localidades = (ArrayList<String>) this.consultaActualizacionView.getListaLocalidadesCopia().getSelectedValuesList();
+		paquete.setLocalidades(localidades);
+		
+		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+		Pasajeros pasajero = pasajerosDao.getPasajeroByNombre((String)(this.consultaActualizacionView.getCmbPasajerosPaquete().getSelectedItem()));
+		paquete.setPasajero(pasajero);
+		
+		paquete.setQuiereAbonoTransporteLocal(this.consultaActualizacionView.getQuiereAbonoTransporteLocal().isSelected());
+		paquete.setQuiereVisitasGuiadas(this.consultaActualizacionView.getQuiereVisitasGuiadas().isSelected());
+		paquete.setTieneSeguro(this.consultaActualizacionView.getGrpSeguro().getSelection().getActionCommand().trim().
+				equals("Si") ? true : false);
+		
+		//Se genera la factura correspondiente.
+		paquete.generarFactura();
+		
+		PaquetesDao paquetesDao = PaquetesDao.getInstance();
+		paquetesDao.getPaquetes().add(paquete);
+		
+		return paquetesDao.persistirPaquetes();
+	}
+	
 	public Object[] getHotelesFromTxt() {
 		
 		HotelesDao hotelesDao = HotelesDao.getInstance();
@@ -132,5 +250,33 @@ public class ConsultaActualizacionController implements ActionListener {
 		HashMap turnosHorariosMap = tablasMaestrasDao.getTurnoHorariosMap();
 		
 		return turnosHorariosMap.keySet().toArray();
+	}
+	
+	@Override
+	public double calcularImporte() {
+
+		double importeTotal = 0;
+		
+		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
+		HashMap<String, Double> localidadesImportesMap = tablasMaestrasDao.getLocalidadesImportesMap();
+		ListModel modelo = this.consultaActualizacionView.getModelo();
+		
+		ArrayList<String> localidadesSeleccionadas = new ArrayList<String>();
+		
+		for (int i = 0; i < modelo.getSize(); i++) {
+			
+			localidadesSeleccionadas.add((String)modelo.getElementAt(i));
+		}
+		
+		double totalImporteLocalidades = 0;
+
+		for (int i = 0; i < localidadesSeleccionadas.size(); i++) {
+			
+			totalImporteLocalidades += localidadesImportesMap.get(localidadesSeleccionadas.get(i));
+		}
+		
+		importeTotal = importeTotal + totalImporteLocalidades; //seguir sumando las demas cosas
+		
+		return importeTotal;
 	}
 }

@@ -97,4 +97,22 @@ public class PasajerosDao {
 		
 		return null;
 	}
+
+	public Pasajeros buscarPasajero(String pasajeroBuscado) {
+
+		for (int i = 0; i < this.pasajeros.size(); i++) {
+			
+			String pasajeroTmp = new String(this.pasajeros.get(i).getNombreApellido().trim());
+			
+			int indice = pasajeroTmp.toLowerCase().indexOf(pasajeroBuscado.toLowerCase());
+			
+			if(indice != -1){
+				
+				return this.pasajeros.get(i);
+			}
+			
+		}
+		
+		return null;
+	}
 }

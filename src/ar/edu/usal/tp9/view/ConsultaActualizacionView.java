@@ -2,6 +2,9 @@ package ar.edu.usal.tp9.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -24,6 +27,7 @@ import javax.swing.ListSelectionModel;
 import ar.edu.usal.tp9.controller.ConsultaActualizacionController;
 import ar.edu.usal.tp9.utils.Constants;
 import ar.edu.usal.tp9.utils.GuiUtilities;
+import ar.edu.usal.tp9.utils.Validador;
 
 public class ConsultaActualizacionView {
 	
@@ -38,10 +42,9 @@ public class ConsultaActualizacionView {
 	private JButton btnConsultar =  new JButton("Consultar");
 	private JButton btnModificar =  new JButton("Modificacion");
 	private JButton btnAnular =  new JButton("Anulacion");
-	private JButton btnAceptar =  new JButton("Aceptar");
+	private JButton btnAceptar =  new JButton("Calcular Importe");
 	private JButton btnCancelar =  new JButton("Cancelar");
 	
-	//////////////
 	private JLabel lblPasajeroPaquete = new JLabel("Pasajero: ");
 	private JComboBox cmbPasajerosPaquete;
 	
@@ -63,8 +66,8 @@ public class ConsultaActualizacionView {
 	private JComboBox cmbHoras;
 	private DefaultComboBoxModel comboModel;
 
-	private JLabel lblFechaLlegada = new JLabel("Fecha llegada: ");
-	private JTextField txtFechaLlegada = new JTextField(Constants.TEXTO_ANCHO * 3/4);
+	private JLabel lblCantidadDias = new JLabel("Cantidad de dias: ");
+	private JTextField txtCantidadDias = new JTextField(Constants.TEXTO_ANCHO * 3/4);
 
 	private JLabel lblSeguro = new JLabel("Quiere seguro?: ");
 	private JRadioButton rdbSi;
@@ -87,10 +90,13 @@ public class ConsultaActualizacionView {
 	
 	private JLabel lblImporte = new JLabel("Importe: ");
 	private JTextField txtImporte = new JTextField(Constants.TEXTO_ANCHO * 3/4);
-	////////////////
+	
+	private Component[] componentesPaqueteEncontrado;
+	private int idPaqueteEncontrado = 0;
 	
 	private ConsultaActualizacionController consultaActualizacionController;
 
+	
 	public ConsultaActualizacionView(ConsultaActualizacionController consultaActualizacionController) {
 		
 		consultaActualizacionController.setView(this);
@@ -115,7 +121,6 @@ public class ConsultaActualizacionView {
 		
 		ocultarVisibilizarBotonesVentana(false);
 
-		////////////////
 		cmbPasajerosPaquete = new JComboBox(this.consultaActualizacionController.getPasajerosFromTxt());
 
 		int opcionSeleccion = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
@@ -138,10 +143,15 @@ public class ConsultaActualizacionView {
 				
 		GuiUtilities.aplicarFormatoTextField(ventana, txtFechaSalida);
 		txtFechaSalida.setText("dd/mm/yyyy");
-//		txtFechaSalida.setActionCommand("Click");
-//		txtFechaSalida.addActionListener(ingresoController);
-//		hay que hacer un click event para que borre ejemplo modelo
 		
+		txtFechaSalida.addMouseListener(new MouseAdapter() { 
+	          
+			public void mousePressed(MouseEvent e) { 
+	              
+	        	  txtFechaSalida.setText("");
+	          }
+		});
+
 		cmbHorarios.setActionCommand("Seleccionar");
 		cmbHorarios.addActionListener(consultaActualizacionController);
 		
@@ -149,10 +159,8 @@ public class ConsultaActualizacionView {
 		cmbHoras = new JComboBox(comboModel);
 		cmbHoras.setMaximumRowCount(Constants.ITEMS_MOSTRAR);
 		
-		GuiUtilities.aplicarFormatoTextField(ventana, txtFechaLlegada);
-		txtFechaLlegada.setText("dd/mm/yyyy");
-//		hay que hacer un click event para que borre ejemplo modelo
-//		falta agregar el horario de llegada en base a los viajes disponibles
+		GuiUtilities.aplicarFormatoTextField(ventana, txtCantidadDias);
+		txtCantidadDias.setText("1");
 		
 		rdbSi = new JRadioButton("Si");
 		GuiUtilities.aplicarFormatoRadioButton(ventana, rdbSi, rdbSi.getText(), consultaActualizacionController);
@@ -172,21 +180,20 @@ public class ConsultaActualizacionView {
 		
 		GuiUtilities.aplicarFormatoTextField(ventana, txtImporte);
 		txtImporte.setEditable(false);
-//		txtImporte.setText(((Double)ingresoController.calcularImporte()).toString());
-//		de que manera se ejecuta la funcion para saber el importe en base a las selecciones anteriores?
-//		hay que implementar interfaz
-		
-		GuiUtilities.setearComandoBoton(btnAceptar, "Aceptar", consultaActualizacionController);
+
+		GuiUtilities.setearComandoBoton(btnAceptar, "Calcular", consultaActualizacionController);
 		GuiUtilities.setearComandoBoton(btnCancelar, "Cancelar", consultaActualizacionController);
 		
 		Component[] componentesPaqueteArray = {lblPasajeroPaquete, cmbPasajerosPaquete, lblLocalidadesPaquete, 
 				scrPaneOriginal, btnAgregar, btnQuitar, pnlCopia, scrPaneCopia, lblFechaSalida, txtFechaSalida, 
-				lblHorarioSalida, cmbHorarios, cmbHoras, lblFechaLlegada, txtFechaLlegada, lblSeguro, 
+				lblHorarioSalida, cmbHorarios, cmbHoras, lblCantidadDias, txtCantidadDias, lblSeguro, 
 				rdbOcultoSeguro, rdbSi, rdbNo, leyenda, quiereAbonoTransporteLocal, quiereVisitasGuiadas, 
 				lblHoteles, cmbHoteles, esPensionCompleta, lblImporte, txtImporte, btnAceptar, btnCancelar};
 		
+		this.componentesPaqueteEncontrado = componentesPaqueteArray;
+		
 		GuiUtilities.agregarComponentesVentana(ventana, componentesPaqueteArray);
-		this.ocultarVisibilizarComponentesVentana(componentesPaqueteArray, true, false);
+		this.ocultarVisibilizarComponentesVentana(componentesPaqueteArray, false, false);
 		
 		ventana.setVisible(true);
 
@@ -284,8 +291,15 @@ public class ConsultaActualizacionView {
 		}
 		
 		txtImporte.setText(importe);
+		
+		this.ocultarVisibilizarComponentesVentana(this.componentesPaqueteEncontrado, true, false);
+		this.ocultarVisibilizarBotonesVentana(true);
 	}
 	
+	public Component[] getComponentesPaqueteEncontrado() {
+		return componentesPaqueteEncontrado;
+	}
+
 	//hh:mm
 	public String getTurnoByHora(String horaMinutos){
 		
@@ -301,5 +315,177 @@ public class ConsultaActualizacionView {
 			
 			return "Noche";
 		}
+	}
+
+	public boolean validar() {
+
+		ArrayList<String> errores = new ArrayList<>();
+		boolean datosValidos = true;
+		
+		if(this.listaLocalidadesCopia.getSelectedValuesList().isEmpty()){
+			
+			errores.add("localidades");
+		}
+		if(this.cmbPasajerosPaquete.getSelectedIndex() <= 0){
+			
+			errores.add("pasajero");
+		}
+		if(this.txtFechaSalida.getText().trim().isEmpty()
+			|| this.txtFechaSalida.getText().trim().equals("dd/mm/yyyy")
+			|| Validador.stringToCalendar(this.txtFechaSalida.getText().trim(), "dd/MM/yyyy") == null){
+			
+			errores.add("fecha salida");
+		}
+		
+		try{
+			
+			Integer cantidadDias = Integer.valueOf(txtCantidadDias.getText());
+			
+			if(cantidadDias < 1){
+				
+				errores.add("cantidad de dias");	
+			}
+		
+		}catch(Exception ex){
+			
+			errores.add("cantidad de dias");
+		}
+		
+		if(!errores.isEmpty()){
+			
+			String error = "Los datos de:\n";
+			
+			for (int i = 0; i < errores.size(); i++) {
+				
+				error = error + "\n- " + errores.get(i);
+			}
+			
+			error += "\n\nson invalidos.";
+			
+			datosValidos = false;
+			
+			JOptionPane.showMessageDialog(null, error, "Datos obligatorios", 
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+		
+		return datosValidos;
+	}
+	
+	public int getIdPaqueteEncontrado() {
+		return idPaqueteEncontrado;
+	}
+
+	public void setIdPaqueteEncontrado(int idPaqueteEncontrado) {
+		this.idPaqueteEncontrado = idPaqueteEncontrado;
+	}
+	
+	public void limpiar() {
+		
+		String output =  "dd/mm/yyyy";
+		
+		cmbPasajerosPaquete.setSelectedIndex(0);
+		listaLocalidadesOriginal.clearSelection();
+		listModel.removeAllElements();
+		txtFechaSalida.setText(output);
+		cmbHorarios.setSelectedIndex(0);
+		comboModel.removeAllElements();
+		txtCantidadDias.setText("1");
+		cmbHoteles.setSelectedIndex(0);
+		txtImporte.setText("");
+		rdbOcultoSeguro.setSelected(true);
+		esPensionCompleta.setSelected(false);
+		quiereAbonoTransporteLocal.setSelected(false);
+		quiereVisitasGuiadas.setSelected(false);
+		this.btnAceptar.setText("Calcular Importe");
+		GuiUtilities.setearComandoBoton(btnAceptar, "Calcular", this.consultaActualizacionController);	
+	}
+
+	public JList getListaLocalidadesOriginal() {
+		return listaLocalidadesOriginal;		
+	}
+
+	public DefaultListModel getModelo() {
+		return listModel;
+	}
+
+	public void cerrar() {
+		ventana.dispose();
+	}
+
+	public JRadioButton getRdbSi() {
+		return rdbSi;
+	}
+	
+	public JRadioButton getRdbNo() {
+		return rdbNo;
+	}
+
+	public JTextArea getLeyenda() {
+		return leyenda;
+	}
+
+	public JComboBox getComboHorarios() {
+		return cmbHorarios;
+	}
+
+	public int getComboHorariosIndex() {
+		return getComboHorarios().getSelectedIndex();
+	}
+
+	public JComboBox getComboHoras() {
+		return cmbHoras;
+	}
+
+	public DefaultComboBoxModel getComboModel() {
+		return comboModel;
+	}
+
+	public JList getListaLocalidadesCopia() {
+		return listaLocalidadesCopia;
+	}
+
+	public JTextField getTxtImporte() {
+		return txtImporte;
+	}
+
+	public JTextField getTxtFechaSalida() {
+		return txtFechaSalida;
+	}
+
+	public JComboBox getCmbPasajerosPaquete() {
+		return cmbPasajerosPaquete;
+	}
+
+	public JCheckBox getQuiereAbonoTransporteLocal() {
+		return quiereAbonoTransporteLocal;
+	}
+
+	public JCheckBox getQuiereVisitasGuiadas() {
+		return quiereVisitasGuiadas;
+	}
+
+	public ButtonGroup getGrpSeguro() {
+		return grpSeguro;
+	}
+	
+	public JComboBox getCmbHoteles() {
+		return cmbHoteles;
+	}
+
+	public JCheckBox getEsPensionCompleta() {
+		return esPensionCompleta;
+	}
+
+	public JTextField getTxtCantidadDias() {
+		return txtCantidadDias;
+	}
+	
+	public void mostrarImporte(double importe) {
+		
+		this.txtImporte.setText(String.valueOf(importe));
+		
+		this.btnAceptar.setText("Aceptar");
+		GuiUtilities.setearComandoBoton(btnAceptar, "Aceptar", this.consultaActualizacionController);
+
 	}
 }

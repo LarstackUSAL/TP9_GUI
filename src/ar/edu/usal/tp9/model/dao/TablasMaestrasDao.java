@@ -17,13 +17,13 @@ public class TablasMaestrasDao {
 
 	private static TablasMaestrasDao tablasMaestrasDaoInstance = null;
 	
-	private ArrayList<String> localidades;
+	private HashMap<String,Double> localidadesImportesMap;
 	private HashMap<String,ArrayList<String>> turnoHorariosMap;
 
 	private TablasMaestrasDao(){
 		
-		this.localidades = new ArrayList<String>();
 		this.turnoHorariosMap = new HashMap<String, ArrayList<String>>();
+		this.localidadesImportesMap = new HashMap<String, Double>();
 		
 		this.loadLocalidades();
 		this.loadHorariosViajes();
@@ -58,9 +58,16 @@ public class TablasMaestrasDao {
 			
 			while(localidadesScanner.hasNextLine()){
 				
-				String localidad = localidadesScanner.nextLine().trim();
+//				String localidad = localidadesScanner.nextLine().trim();				
+//				this.localidades.add(localidad);
 				
-				this.localidades.add(localidad);
+				String linea = localidadesScanner.nextLine();
+				String[] lineaArray = linea.split(";");
+				
+				String localidad = lineaArray[0].trim();
+				Double importe = Double.valueOf(lineaArray[1].trim());
+				
+				this.localidadesImportesMap.put(localidad, importe);
 			}
 			
 			localidadesScanner.close();
@@ -123,11 +130,22 @@ public class TablasMaestrasDao {
 
 	public ArrayList<String> getLocalidades() {
 		
-		return localidades;
+		Object[] localidadesArray = this.localidadesImportesMap.keySet().toArray();
+		ArrayList<String> localidadesList = new ArrayList<String>();
+		
+		for (int i = 0; i < localidadesArray.length; i++) {
+			localidadesList.add((String)localidadesArray[i]);
+		}
+		
+		return localidadesList;
 	}
 
 	public HashMap<String, ArrayList<String>> getTurnoHorariosMap() {
 		
 		return turnoHorariosMap;
+	}
+
+	public HashMap<String, Double> getLocalidadesImportesMap() {
+		return localidadesImportesMap;
 	}
 }

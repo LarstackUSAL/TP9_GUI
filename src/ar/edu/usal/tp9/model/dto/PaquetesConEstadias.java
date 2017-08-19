@@ -32,5 +32,4 @@ public class PaquetesConEstadias extends Paquetes {
 	public void setEsPensionCompleta(boolean esPensionCompleta) {
 		this.esPensionCompleta = esPensionCompleta;
 	}
-	
 }
