@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -218,5 +219,87 @@ public class ConsultaActualizacionView {
 		grpSeguro.add(rdbNo);
 				
 	}
+
+	public void mostrarMensajeDialog(String mensajeBody, String titulo) {
+		
+		JOptionPane.showMessageDialog(null, mensajeBody, titulo, JOptionPane.INFORMATION_MESSAGE);
+//		this.cerrar();
+	}
 	
+	public JComboBox getCmbPasajeros() {
+		return cmbPasajeros;
+	}
+
+	public JComboBox getCmbLocalidades() {
+		return cmbLocalidades;
+	}
+
+	public void fillForm(String nombreApellido, Object[] localidades,
+			String fecha, String hora,
+			boolean tieneSeguro, boolean quiereAbonoTransporteLocal2,
+			boolean quiereVisitasGuiadas2, String hotel, boolean pensionCompleta, String importe) {
+		
+//		for (int i = 0; i < cmbPasajerosPaquete.getItemCount(); i++) {
+//			
+//			if(nombreApellido.equals((String)cmbPasajerosPaquete.getItemAt(i))){
+//				
+//				cmbPasajerosPaquete.setSelectedIndex(i);
+//				break;
+//			}
+//		}
+		
+
+		
+//		for (int i = 0; i < cmbHoras.getItemCount(); i++) {
+//			
+//			if(hora.equals((String)cmbHoras.getItemAt(i))){
+//				
+//				cmbHoras.setSelectedIndex(arg0)
+//				break;
+//			}
+//		}
+//		cmbHorarios.setSelectedIndex(0);
+		
+
+		for (int i = 0; i < localidades.length; i++) {
+			
+			this.listModel.addElement((String)localidades[i]);
+		}
+		
+		cmbPasajerosPaquete.setSelectedItem(nombreApellido);
+		txtFechaSalida.setText(fecha);
+		cmbHoras.setSelectedItem(hora);
+		cmbHorarios.setSelectedItem(this.getTurnoByHora(hora));
+		rdbOcultoSeguro.setSelected(tieneSeguro);
+		esPensionCompleta.setSelected(pensionCompleta);
+		quiereAbonoTransporteLocal.setSelected(quiereAbonoTransporteLocal2);
+		quiereVisitasGuiadas.setSelected(quiereVisitasGuiadas2);
+		 
+		if(hotel != null && !hotel.trim().isEmpty()){
+			
+			cmbHoteles.setSelectedItem(hotel);
+		}else{
+			
+			cmbHoteles.setSelectedIndex(0);
+		}
+		
+		txtImporte.setText(importe);
+	}
+	
+	//hh:mm
+	public String getTurnoByHora(String horaMinutos){
+		
+		int hora = Integer.valueOf(horaMinutos.substring(0,2));
+		
+		if(hora >= 0 && hora < 12){
+			
+			return "Manana";
+		}else if(hora >= 12 && hora < 21){
+			
+			return "Tarde";
+		}else{
+			
+			return "Noche";
+		}
+	}
 }

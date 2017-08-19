@@ -121,7 +121,7 @@ public class IngresoView {
 		
 		pnlCopia = new JPanel();
 		GuiUtilities.aplicarFormatoPanel(ventana, pnlCopia, listaLocalidadesOriginal, listaLocalidadesCopia);
-				
+
 		GuiUtilities.aplicarFormatoTextField(ventana, txtFechaSalida);
 		txtFechaSalida.setText("dd/mm/yyyy");
 //		txtFechaSalida.setActionCommand("Click");

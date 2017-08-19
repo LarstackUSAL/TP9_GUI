@@ -6,11 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import ar.edu.usal.tp9.exception.PaqueteNoEncontradoException;
 import ar.edu.usal.tp9.model.dao.HotelesDao;
+import ar.edu.usal.tp9.model.dao.PaquetesDao;
 import ar.edu.usal.tp9.model.dao.PasajerosDao;
 import ar.edu.usal.tp9.model.dao.TablasMaestrasDao;
 import ar.edu.usal.tp9.model.dto.Hoteles;
+import ar.edu.usal.tp9.model.dto.Paquetes;
+import ar.edu.usal.tp9.model.dto.PaquetesConEstadias;
 import ar.edu.usal.tp9.model.dto.Pasajeros;
+import ar.edu.usal.tp9.utils.Validador;
 import ar.edu.usal.tp9.view.ConsultaActualizacionView;
 
 public class ConsultaActualizacionController implements ActionListener {
@@ -53,17 +58,45 @@ public class ConsultaActualizacionController implements ActionListener {
 
 		if ("Consultar".equals(e.getActionCommand())) {
 			
-//			levanta los datos de los paquetes en base a los filtros
-//			muestra misma pantalla de ingresoView con input deshabilitados
+			String pasajeroString = ((String) this.consultaActualizacionView.getCmbPasajeros().getSelectedItem()).trim();
+			PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+			Pasajeros pasajero = pasajerosDao.getPasajeroByNombre(pasajeroString);
 			
-//			try{
-//				
-////				Levanta los datos
-////				this.
-//			}catch(RegistroInexistenteException ex){
-//				
-//			}		
+			String localidadString = ((String) this.consultaActualizacionView.getCmbLocalidades().getSelectedItem()).trim();
 			
+			PaquetesDao paquetesDao = PaquetesDao.getInstance();
+			
+			try {
+			
+				Paquetes paqueteEncontrado = paquetesDao.getPaqueteByPasajeroLocalidad(pasajero, localidadString);
+				
+				String hotel = null;
+				boolean pensionCompleta = false;
+				
+				if(paqueteEncontrado instanceof PaquetesConEstadias){
+					
+					hotel = ((PaquetesConEstadias)paqueteEncontrado).getHotel().getNombre();
+					pensionCompleta = ((PaquetesConEstadias)paqueteEncontrado).isEsPensionCompleta();
+				}
+				
+				this.consultaActualizacionView.fillForm(
+						paqueteEncontrado.getPasajero().getNombreApellido(),
+						paqueteEncontrado.getLocalidades().toArray(),
+						Validador.calendarToString(paqueteEncontrado.getFechaHoraSalida(), "dd/MM/yyyy"),
+						Validador.HoraCalendarToString(paqueteEncontrado.getFechaHoraSalida()),
+						paqueteEncontrado.isTieneSeguro(),
+						paqueteEncontrado.isQuiereAbonoTransporteLocal(),
+						paqueteEncontrado.isQuiereVisitasGuiadas(),
+						hotel,
+						pensionCompleta,
+						String.valueOf(paqueteEncontrado.getImporte())
+				);
+				
+			} catch (PaqueteNoEncontradoException ex) {
+				
+				this.consultaActualizacionView.mostrarMensajeDialog(ex.getMessage(), "Paquete No Encontrado");
+			}
+					
 		} else if ("Modificacion".equals(e.getActionCommand())) {
 //			 y si hace click en modificar se habilitan
 			

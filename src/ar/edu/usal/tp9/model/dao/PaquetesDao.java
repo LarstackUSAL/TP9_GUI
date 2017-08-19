@@ -11,6 +11,7 @@ import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import ar.edu.usal.tp9.exception.PaqueteNoEncontradoException;
 import ar.edu.usal.tp9.model.dto.Hoteles;
 import ar.edu.usal.tp9.model.dto.Paquetes;
 import ar.edu.usal.tp9.model.dto.PaquetesConEstadias;
@@ -357,5 +358,28 @@ public class PaquetesDao {
 
 	public ArrayList<Paquetes> getPaquetes() {
 		return paquetes;
+	}
+
+	public Paquetes getPaqueteByPasajeroLocalidad(Pasajeros pasajero,
+			String localidadString) throws PaqueteNoEncontradoException {
+		
+		for (int i = 0; i < this.paquetes.size(); i++) {
+			
+			ArrayList<String> localidades = paquetes.get(i).getLocalidades();
+			Pasajeros pasajeroIterado = paquetes.get(i).getPasajero();  
+			
+			if(pasajeroIterado == pasajero){
+				
+				for (int j = 0; j < localidades.size(); j++) {
+
+					if(localidades.get(j).equals(localidadString)){
+						
+						return paquetes.get(i);
+					}
+				}
+			}
+		}
+		
+		throw new PaqueteNoEncontradoException();
 	}
 }
