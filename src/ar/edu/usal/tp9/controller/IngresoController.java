@@ -286,7 +286,7 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 			
 			importeHotel = hotelesDao.getHotelByNombre(((String)this.ingresoView.getCmbHoteles().getSelectedItem()).trim()).getImporte();
 			
-			importeTotal += importeHotel * (Double.valueOf(ingresoView.getTxtCantidadDias().toString()));
+			importeTotal += importeHotel * (Double.valueOf(ingresoView.getTxtCantidadDias().getText()));
 			
 			if (this.ingresoView.getEsPensionCompleta().isSelected()) {
 				

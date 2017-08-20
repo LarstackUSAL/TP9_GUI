@@ -304,7 +304,7 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 			
 			importeHotel = hotelesDao.getHotelByNombre(((String)this.consultaActualizacionView.getCmbHoteles().getSelectedItem()).trim()).getImporte();
 			
-			importeTotal += importeHotel * (Double.valueOf(consultaActualizacionView.getTxtCantidadDias().toString()));
+			importeTotal += importeHotel * (Double.valueOf(consultaActualizacionView.getTxtCantidadDias().getText()));
 			
 			if (this.consultaActualizacionView.getEsPensionCompleta().isSelected()) {
 				
