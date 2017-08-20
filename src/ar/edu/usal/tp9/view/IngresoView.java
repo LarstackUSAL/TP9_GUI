@@ -169,6 +169,8 @@ public class IngresoView {
 
 	public void limpiar() {
 
+		this.habilitarCampos(true);
+		
 		String output =  "dd/mm/yyyy";
 
 		cmbPasajeros.setSelectedIndex(0);
@@ -185,7 +187,28 @@ public class IngresoView {
 		quiereAbonoTransporteLocal.setSelected(false);
 		quiereVisitasGuiadas.setSelected(false);
 		this.btnAceptar.setText("Calcular Importe");
-		GuiUtilities.setearComandoBoton(btnAceptar, "Calcular", ingresoController);		
+		GuiUtilities.setearComandoBoton(btnAceptar, "Calcular", ingresoController);
+	}
+	
+	public void habilitarCampos(boolean b) {
+
+		cmbPasajeros.setEnabled(b);
+		listaLocalidadesOriginal.setEnabled(b);
+		listaLocalidadesCopia.setEnabled(b);
+		txtFechaSalida.setEnabled(b);
+		cmbHorarios.setEnabled(b);
+		cmbHoras.setEnabled(b);
+		txtCantidadDias.setEnabled(b);
+		cmbHoteles.setEnabled(b);
+		txtImporte.setEnabled(b);
+		rdbOcultoSeguro.setEnabled(b);
+		esPensionCompleta.setEnabled(b);
+		quiereAbonoTransporteLocal.setEnabled(b);
+		quiereVisitasGuiadas.setEnabled(b);
+		btnAgregar.setEnabled(b);
+		btnQuitar.setEnabled(b);
+		rdbSi.setEnabled(b);
+		rdbNo.setEnabled(b);
 	}
 
 	private void addBotonesGrupo(ButtonGroup grupoBotones) {
@@ -204,8 +227,12 @@ public class IngresoView {
 		return listModel;
 	}
 
+	public JFrame getVentana() {
+		return ventana;
+	}
+
 	public void cerrar() {
-		ventana.dispose();
+		ventana.dispose();	
 	}
 
 	public JRadioButton getRdbSi() {
@@ -299,20 +326,26 @@ public class IngresoView {
 			try{
 				int dia = Integer.valueOf(this.txtFechaSalida.getText().trim().substring(0,2));
 				int mes = Integer.valueOf(this.txtFechaSalida.getText().trim().substring(3,5));
+				int anio = Integer.valueOf(this.txtFechaSalida.getText().trim().substring(6,10));
 
-				if(dia > 0 && dia <=31){
-					if(!(mes > 0 && mes <= 12)){
+				if(!((dia > 0 && dia <=31) && (mes > 0 && mes <= 12) && (anio >= 2017 && anio <= 9999))){
 
-						errores.add("fecha salida");
-					}
-				}else{
 					errores.add("fecha salida");
 				}
 			}catch(NumberFormatException e){
+
 				errores.add("fecha salida");
 			}
 		}
 
+		if(this.cmbHorarios.getSelectedIndex() <= 0){
+
+			errores.add("turno");
+		}
+		if(this.cmbHoras.getSelectedIndex() <= 0){
+
+			errores.add("hora");
+		}
 		try{
 
 			Integer cantidadDias = Integer.valueOf(txtCantidadDias.getText());
@@ -356,7 +389,9 @@ public class IngresoView {
 	public void mostrarImporte(double importe) {
 
 		this.txtImporte.setText(String.valueOf(importe));
-
+		
+		this.habilitarCampos(false);
+		
 		this.btnAceptar.setText("Aceptar");
 		GuiUtilities.setearComandoBoton(btnAceptar, "Aceptar", ingresoController);
 

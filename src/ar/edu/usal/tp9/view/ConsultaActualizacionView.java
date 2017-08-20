@@ -245,28 +245,6 @@ public class ConsultaActualizacionView {
 			String fecha, String hora,
 			boolean tieneSeguro, boolean quiereAbonoTransporteLocal2,
 			boolean quiereVisitasGuiadas2, String hotel, boolean pensionCompleta, String importe) {
-		
-//		for (int i = 0; i < cmbPasajerosPaquete.getItemCount(); i++) {
-//			
-//			if(nombreApellido.equals((String)cmbPasajerosPaquete.getItemAt(i))){
-//				
-//				cmbPasajerosPaquete.setSelectedIndex(i);
-//				break;
-//			}
-//		}
-		
-
-		
-//		for (int i = 0; i < cmbHoras.getItemCount(); i++) {
-//			
-//			if(hora.equals((String)cmbHoras.getItemAt(i))){
-//				
-//				cmbHoras.setSelectedIndex(arg0)
-//				break;
-//			}
-//		}
-//		cmbHorarios.setSelectedIndex(0);
-		
 
 		for (int i = 0; i < localidades.length; i++) {
 			
@@ -321,53 +299,76 @@ public class ConsultaActualizacionView {
 
 		ArrayList<String> errores = new ArrayList<>();
 		boolean datosValidos = true;
-		
-		if(this.listaLocalidadesCopia.getSelectedValuesList().isEmpty()){
-			
+
+		if(this.listModel.getSize() < 1){
+
 			errores.add("localidades");
 		}
-		if(this.cmbPasajerosPaquete.getSelectedIndex() <= 0){
-			
+		if(this.cmbPasajeros.getSelectedIndex() <= 0){
+
 			errores.add("pasajero");
 		}
 		if(this.txtFechaSalida.getText().trim().isEmpty()
-			|| this.txtFechaSalida.getText().trim().equals("dd/mm/yyyy")
-			|| Validador.stringToCalendar(this.txtFechaSalida.getText().trim(), "dd/MM/yyyy") == null){
-			
+				|| this.txtFechaSalida.getText().trim().equals("dd/mm/yyyy")
+				){
+
 			errores.add("fecha salida");
+		}else{
+
+			try{
+				int dia = Integer.valueOf(this.txtFechaSalida.getText().trim().substring(0,2));
+				int mes = Integer.valueOf(this.txtFechaSalida.getText().trim().substring(3,5));
+				int anio = Integer.valueOf(this.txtFechaSalida.getText().trim().substring(6,10));
+
+				if(!((dia > 0 && dia <=31) && (mes > 0 && mes <= 12) && (anio >= 2017 && anio <= 9999))){
+
+					errores.add("fecha salida");
+				}
+			}catch(NumberFormatException e){
+
+				errores.add("fecha salida");
+			}
 		}
-		
+
+		if(this.cmbHorarios.getSelectedIndex() <= 0){
+
+			errores.add("turno");
+		}
+		if(this.cmbHoras.getSelectedIndex() <= 0){
+
+			errores.add("hora");
+		}
 		try{
-			
+
 			Integer cantidadDias = Integer.valueOf(txtCantidadDias.getText());
-			
+
 			if(cantidadDias < 1){
-				
+
 				errores.add("cantidad de dias");	
 			}
-		
+
 		}catch(Exception ex){
-			
+
 			errores.add("cantidad de dias");
 		}
-		
+
 		if(!errores.isEmpty()){
-			
+
 			String error = "Los datos de:\n";
-			
+
 			for (int i = 0; i < errores.size(); i++) {
-				
+
 				error = error + "\n- " + errores.get(i);
 			}
-			
+
 			error += "\n\nson invalidos.";
-			
+
 			datosValidos = false;
-			
+
 			JOptionPane.showMessageDialog(null, error, "Datos obligatorios", 
 					JOptionPane.INFORMATION_MESSAGE);
 		}
-		
+
 		return datosValidos;
 	}
 	
@@ -380,6 +381,8 @@ public class ConsultaActualizacionView {
 	}
 	
 	public void limpiar() {
+		
+		this.habilitarCampos(true);
 		
 		String output =  "dd/mm/yyyy";
 		
@@ -398,6 +401,27 @@ public class ConsultaActualizacionView {
 		quiereVisitasGuiadas.setSelected(false);
 		this.btnAceptar.setText("Calcular Importe");
 		GuiUtilities.setearComandoBoton(btnAceptar, "Calcular", this.consultaActualizacionController);	
+	}
+	
+	public void habilitarCampos(boolean b) {
+
+		cmbPasajeros.setEnabled(b);
+		listaLocalidadesOriginal.setEnabled(b);
+		listaLocalidadesCopia.setEnabled(b);
+		txtFechaSalida.setEnabled(b);
+		cmbHorarios.setEnabled(b);
+		cmbHoras.setEnabled(b);
+		txtCantidadDias.setEnabled(b);
+		cmbHoteles.setEnabled(b);
+		txtImporte.setEnabled(b);
+		rdbOcultoSeguro.setEnabled(b);
+		esPensionCompleta.setEnabled(b);
+		quiereAbonoTransporteLocal.setEnabled(b);
+		quiereVisitasGuiadas.setEnabled(b);
+		btnAgregar.setEnabled(b);
+		btnQuitar.setEnabled(b);
+		rdbSi.setEnabled(b);
+		rdbNo.setEnabled(b);
 	}
 
 	public JList getListaLocalidadesOriginal() {
@@ -481,8 +505,10 @@ public class ConsultaActualizacionView {
 	}
 	
 	public void mostrarImporte(double importe) {
-		
+
 		this.txtImporte.setText(String.valueOf(importe));
+		
+		this.habilitarCampos(false);
 		
 		this.btnAceptar.setText("Aceptar");
 		GuiUtilities.setearComandoBoton(btnAceptar, "Aceptar", this.consultaActualizacionController);

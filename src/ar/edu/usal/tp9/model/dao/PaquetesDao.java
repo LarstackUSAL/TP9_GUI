@@ -23,13 +23,14 @@ public class PaquetesDao {
 	private static PaquetesDao paquetesDaoInstance = null;
 
 	private ArrayList<Paquetes> paquetes;
-	private static int nextIdPaquetes = 1;
+	private static int nextIdPaquetes = 0;
 
 	private PaquetesDao(){
 
 		this.paquetes = new ArrayList<Paquetes>();
 
 		this.loadPaquetes();
+		loadNextId();
 	}
 
 	public static PaquetesDao getInstance(){
@@ -222,7 +223,7 @@ public class PaquetesDao {
 				Paquetes paquete = this.paquetes.get(i);
 
 				String fecha = Validador.calendarToString(paquete.getFechaHoraSalida(), "dd/MM/yyyy");
-				String hora = Validador.HoraCalendarToString(paquete.getFechaHoraSalida());
+				String hora = Validador.fillString(Validador.HoraCalendarToString(paquete.getFechaHoraSalida()), 5, "0", true);
 
 				String paqueteString =
 						paquete.getId() + ";" +
@@ -237,8 +238,8 @@ public class PaquetesDao {
 
 				if(paquete instanceof PaquetesConEstadias){
 
-					paqueteString += ((PaquetesConEstadias)paquete).getHotel().getNombre().trim();
-					paqueteString += String.valueOf(((PaquetesConEstadias)paquete).isEsPensionCompleta());
+					paqueteString = paqueteString + ";" + ((PaquetesConEstadias)paquete).getHotel().getNombre().trim();
+					paqueteString = paqueteString + ";" + String.valueOf(((PaquetesConEstadias)paquete).isEsPensionCompleta());
 				}
 
 				paquetesOut.println(paqueteString);
@@ -265,6 +266,8 @@ public class PaquetesDao {
 						);				
 			}
 
+			facturasOut.close();
+			facturasFile.close();			
 			localidadesPaquetesOut.close();
 			localidadesPaquetesFile.close();
 			paquetesOut.close();

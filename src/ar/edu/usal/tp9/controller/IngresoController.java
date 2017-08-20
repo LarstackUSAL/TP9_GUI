@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 
+import ar.edu.usal.tp9.model.dao.FacturasDao;
 import ar.edu.usal.tp9.model.dao.HotelesDao;
 import ar.edu.usal.tp9.model.dao.PaquetesDao;
 import ar.edu.usal.tp9.model.dao.PasajerosDao;
@@ -177,6 +178,7 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 				equals("Si") ? true : false);
 		
 		//Se genera la factura correspondiente.
+		FacturasDao facturasDao = FacturasDao.getInstance();
 		paquete.generarFactura();
 		
 		PaquetesDao paquetesDao = PaquetesDao.getInstance();
@@ -233,11 +235,12 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 		
 		return turnosHorariosMap.keySet().toArray();
 	}
-
+	
 	@Override
 	public double calcularImporte() {
 
 		double importeTotal = 0;
+		double importeHotel = 0;
 		
 		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
 		HashMap<String, Double> localidadesImportesMap = tablasMaestrasDao.getLocalidadesImportesMap();
@@ -257,8 +260,43 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 			totalImporteLocalidades += localidadesImportesMap.get(localidadesSeleccionadas.get(i));
 		}
 		
-		importeTotal = importeTotal + totalImporteLocalidades; //seguir sumando las demas cosas
+		importeTotal = importeTotal + totalImporteLocalidades; 
 		
-		return importeTotal; //LAS MISMAS COSAS QUE SE HACEN ACA HAY QUE AGREGARLAS A CONSULTA
+		if (this.ingresoView.getRdbSi().isSelected()) {
+			
+			importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_SEGURO;
+			
+		}
+		
+		if (this.ingresoView.getQuiereVisitasGuiadas().isSelected()) {
+			
+			importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_GUIA;
+			
+		}
+		
+		if (this.ingresoView.getQuiereAbonoTransporteLocal().isSelected()) {
+			
+			importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_ABONO_TRANSPORTE;
+			
+		} 	
+		
+		if (this.ingresoView.getCmbHoteles().getSelectedIndex() != 0) {
+			
+			HotelesDao hotelesDao = HotelesDao.getInstance();
+			
+			importeHotel = hotelesDao.getHotelByNombre(((String)this.ingresoView.getCmbHoteles().getSelectedItem()).trim()).getImporte();
+			
+			importeTotal += importeHotel * (Double.valueOf(ingresoView.getTxtCantidadDias().toString()));
+			
+			if (this.ingresoView.getEsPensionCompleta().isSelected()) {
+				
+				importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_PENSION_COMPLETA;
+				
+			}
+			
+		}		
+		
+		return importeTotal;
+		
 	}
 }

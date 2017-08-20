@@ -15,17 +15,14 @@ import ar.edu.usal.tp9.utils.Validador;
 
 public class FacturasDao {
 
-	private static int nextIdFactura = 1;
+	private static int nextIdFactura = 0;
 
 	private static FacturasDao facturasDaoInstance = null;
-	
-	private ArrayList<Facturas> facturas;
-	
-	private FacturasDao(){
 		
-		this.facturas = new ArrayList<Facturas>();
-		 
+	private FacturasDao(){
+				 
 		this.loadFacturas();
+		loadNextId();
 	}
 
 	public static FacturasDao getInstance(){
@@ -135,4 +132,9 @@ public class FacturasDao {
 
 		return nextIdFactura;
 	}
+
+//	public void generarFactura(Paquetes paquete) {
+//		
+//		Facturas factura = paquete.generarFactura();
+//	}
 }

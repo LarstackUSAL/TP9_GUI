@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 
 import ar.edu.usal.tp9.exception.PaqueteNoEncontradoException;
+import ar.edu.usal.tp9.model.dao.FacturasDao;
 import ar.edu.usal.tp9.model.dao.HotelesDao;
 import ar.edu.usal.tp9.model.dao.PaquetesDao;
 import ar.edu.usal.tp9.model.dao.PasajerosDao;
@@ -126,7 +127,7 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 					this.consultaActualizacionView.mostrarMensajeDialog("Datos guardados con exito!", "Exito");
 					this.consultaActualizacionView.limpiar();
 					this.consultaActualizacionView.ocultarVisibilizarComponentesVentana(
-							this.consultaActualizacionView.getComponentesPaqueteEncontrado(), false, false);
+					this.consultaActualizacionView.getComponentesPaqueteEncontrado(), false, false);
 				}else{
 					
 					this.consultaActualizacionView.mostrarMensajeDialog("Se ha verificado un error de persistencia.", "ERROR");
@@ -219,6 +220,7 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 				equals("Si") ? true : false);
 		
 		//Se genera la factura correspondiente.
+		FacturasDao facturasDao = FacturasDao.getInstance();
 		paquete.generarFactura();
 		
 		PaquetesDao paquetesDao = PaquetesDao.getInstance();
@@ -256,6 +258,7 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 	public double calcularImporte() {
 
 		double importeTotal = 0;
+		double importeHotel = 0;
 		
 		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
 		HashMap<String, Double> localidadesImportesMap = tablasMaestrasDao.getLocalidadesImportesMap();
@@ -275,8 +278,43 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 			totalImporteLocalidades += localidadesImportesMap.get(localidadesSeleccionadas.get(i));
 		}
 		
-		importeTotal = importeTotal + totalImporteLocalidades; //seguir sumando las demas cosas
+		importeTotal = importeTotal + totalImporteLocalidades; 
+		
+		if (this.consultaActualizacionView.getRdbSi().isSelected()) {
+			
+			importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_SEGURO;
+			
+		}
+		
+		if (this.consultaActualizacionView.getQuiereVisitasGuiadas().isSelected()) {
+			
+			importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_GUIA;
+			
+		}
+		
+		if (this.consultaActualizacionView.getQuiereAbonoTransporteLocal().isSelected()) {
+			
+			importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_ABONO_TRANSPORTE;
+			
+		} 	
+		
+		if (this.consultaActualizacionView.getCmbHoteles().getSelectedIndex() != 0) {
+			
+			HotelesDao hotelesDao = HotelesDao.getInstance();
+			
+			importeHotel = hotelesDao.getHotelByNombre(((String)this.consultaActualizacionView.getCmbHoteles().getSelectedItem()).trim()).getImporte();
+			
+			importeTotal += importeHotel * (Double.valueOf(consultaActualizacionView.getTxtCantidadDias().toString()));
+			
+			if (this.consultaActualizacionView.getEsPensionCompleta().isSelected()) {
+				
+				importeTotal += importeTotal * ICalculoImporte.PORCENTAJE_PENSION_COMPLETA;
+				
+			}
+			
+		}		
 		
 		return importeTotal;
+		
 	}
 }
