@@ -83,8 +83,9 @@ public class PaquetesDao {
 				double importe = Double.parseDouble(lineaArray[3].trim());
 
 				//pasajero
-				PasajerosDao pasajerosDao = PasajerosDao.getInstance();
-				Pasajeros pasajero = pasajerosDao.getPasajeroByNombre(lineaArray[4].trim());
+//				PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+//				Pasajeros pasajero = pasajerosDao.getPasajeroByNombre(lineaArray[4].trim());
+				ArrayList<Pasajeros> pasajeros = this.loadPasajeros(idPaquete);
 
 				//abono transporte local
 				boolean quiereAbonoTransporteLocal = Boolean.parseBoolean(lineaArray[5].trim());
@@ -127,7 +128,7 @@ public class PaquetesDao {
 				paquete.setFechaHoraSalida(fechaHoraSalida);				
 				paquete.setImporte(importe);
 				paquete.setLocalidades(localidades);				
-				paquete.setPasajero(pasajero);
+				paquete.setPasajeros(pasajeros);
 				paquete.setCantidadDias(cantidadDias);
 
 				this.paquetes.add(paquete);
@@ -260,7 +261,7 @@ public class PaquetesDao {
 						String.valueOf(paquete.getFacturas().getNumero()) + ";" +
 								String.valueOf(paquete.getId()) + ";" +
 								Validador.calendarToString(paquete.getFacturas().getFecha(), "dd/MM/yyyy") + ";" +
-								paquete.getFacturas().getPasajero().getNombreApellido() + ";" +
+//								paquete.getFacturas().getPasajero().getNombreApellido() + ";" +
 								String.valueOf(paquete.getFacturas().getTipo()) + ";" +
 								String.valueOf(paquete.getFacturas().getImporte())
 						);				

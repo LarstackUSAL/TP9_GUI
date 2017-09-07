@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 
@@ -168,9 +167,18 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 		
 		paquete.setLocalidades(localidades);
 		
-		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
-		Pasajeros pasajero = pasajerosDao.getPasajeroByNombre((String)(this.ingresoView.getCmbPasajeros().getSelectedItem()));
-		paquete.setPasajero(pasajero);
+//		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+//		Pasajeros pasajero = pasajerosDao.getPasajeroByNombre((String)(this.ingresoView.getCmbPasajeros().getSelectedItem()));
+//		paquete.setPasajero(pasajero);
+		
+		ArrayList<Pasajeros> pasajeros = new ArrayList<Pasajeros>(); 
+		ListModel model2 = this.ingresoView.getListaPasajerosCopia().getModel();
+		for (int i = 0; i < model2.getSize(); i++) {
+			
+			pasajeros.add((Pasajeros) model.getElementAt(i));
+		}
+		
+		paquete.setPasajeros(pasajeros);
 		
 		paquete.setQuiereAbonoTransporteLocal(this.ingresoView.getQuiereAbonoTransporteLocal().isSelected());
 		paquete.setQuiereVisitasGuiadas(this.ingresoView.getQuiereVisitasGuiadas().isSelected());

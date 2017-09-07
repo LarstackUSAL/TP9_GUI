@@ -69,7 +69,7 @@ public class FacturasDao {
 				PaquetesDao paquetesDao = PaquetesDao.getInstance();
 				
 				Paquetes paquete = paquetesDao.getPaqueteById(idPaquete);
-				paquete.generarFactura(numeroFactura, idPaquete, fecha, pasajero, tipo, importe);
+				paquete.generarFactura(numeroFactura, idPaquete, fecha, tipo, importe);
 				
 			}
 			

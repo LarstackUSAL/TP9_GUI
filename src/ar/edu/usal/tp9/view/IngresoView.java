@@ -33,8 +33,16 @@ public class IngresoView {
 
 	private JFrame ventana = new JFrame("Ingreso de datos");
 
-	private JLabel lblPasajero = new JLabel("Pasajero: ");
-	private JComboBox cmbPasajeros;
+	private JLabel lblPasajero = new JLabel("Pasajeros: ");
+//	private JComboBox cmbPasajeros;
+	private JList listaPasajerosOriginal;
+	private JScrollPane scrPane2Original;
+	private JButton btn2Agregar = new JButton("Agregar >>");
+	private JButton btn2Quitar = new JButton("<< Quitar");
+	private DefaultListModel list2Model;
+	private JList listaPasajerosCopia;
+	private JScrollPane scrPane2Copia;
+	private JPanel pnl2Copia;
 
 	private JLabel lblLocalidades = new JLabel("Localidades: ");
 	private JList listaLocalidadesOriginal;
@@ -82,6 +90,7 @@ public class IngresoView {
 
 	private IngresoController ingresoController;
 
+	
 	public IngresoView(IngresoController ingresoController) {
 
 		ingresoController.setView(this);
@@ -91,9 +100,25 @@ public class IngresoView {
 
 		cmbHorarios = new JComboBox(this.ingresoController.getTurnosFromTxt());
 
-		cmbPasajeros = new JComboBox(this.ingresoController.getPasajerosFromTxt());
+//		cmbPasajeros = new JComboBox(this.ingresoController.getPasajerosFromTxt());
 
 		int opcionSeleccion = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+		
+		listaPasajerosOriginal = new JList(this.ingresoController.getPasajerosFromTxt());
+		GuiUtilities.aplicarFormatoLista(ventana, listaPasajerosOriginal, opcionSeleccion);
+		scrPane2Original = new JScrollPane(listaPasajerosOriginal); 
+
+		GuiUtilities.setearComandoBoton(btn2Agregar, "Agregar", ingresoController);
+		GuiUtilities.setearComandoBoton(btn2Quitar, "Quitar", ingresoController);
+
+		list2Model = new DefaultListModel();
+
+		listaPasajerosCopia = new JList(list2Model);
+		GuiUtilities.aplicarFormatoLista(ventana, listaPasajerosCopia, opcionSeleccion);
+		scrPane2Copia = new JScrollPane(listaPasajerosCopia); 
+
+		pnl2Copia = new JPanel();
+		GuiUtilities.aplicarFormatoPanel(ventana, pnl2Copia, listaPasajerosOriginal, listaPasajerosCopia);
 
 		listaLocalidadesOriginal = new JList(this.ingresoController.getLocalidadesFromTxt());
 		GuiUtilities.aplicarFormatoLista(ventana, listaLocalidadesOriginal, opcionSeleccion);
@@ -154,7 +179,8 @@ public class IngresoView {
 		GuiUtilities.setearComandoBoton(btnAceptar, "Calcular", ingresoController);
 		GuiUtilities.setearComandoBoton(btnCancelar, "Cancelar", ingresoController);		
 
-		Component[] componentesArray = {lblPasajero, cmbPasajeros, lblLocalidades, scrPaneOriginal, 
+		Component[] componentesArray = {lblPasajero, scrPane2Original, btn2Agregar, btn2Quitar, 
+				pnl2Copia, scrPane2Copia, lblLocalidades, scrPaneOriginal, 
 				btnAgregar, btnQuitar, pnlCopia, scrPaneCopia, lblFechaSalida, txtFechaSalida, 
 				lblHorarioSalida, cmbHorarios, cmbHoras, lblCantidadDias, txtCantidadDias, 
 				lblSeguro, rdbOcultoSeguro, rdbSi, rdbNo, leyenda, quiereAbonoTransporteLocal, 
@@ -173,7 +199,8 @@ public class IngresoView {
 		
 		String output =  "dd/mm/yyyy";
 
-		cmbPasajeros.setSelectedIndex(0);
+//		cmbPasajeros.setSelectedIndex(0);
+		list2Model.removeAllElements();
 		listaLocalidadesOriginal.clearSelection();
 		listModel.removeAllElements();
 		txtFechaSalida.setText(output);
@@ -192,7 +219,9 @@ public class IngresoView {
 	
 	public void habilitarCampos(boolean b) {
 
-		cmbPasajeros.setEnabled(b);
+//		cmbPasajeros.setEnabled(b);
+		listaPasajerosOriginal.setEnabled(b);
+		listaPasajerosCopia.setEnabled(b);
 		listaLocalidadesOriginal.setEnabled(b);
 		listaLocalidadesCopia.setEnabled(b);
 		txtFechaSalida.setEnabled(b);
@@ -275,8 +304,12 @@ public class IngresoView {
 		return txtFechaSalida;
 	}
 
-	public JComboBox getCmbPasajeros() {
-		return cmbPasajeros;
+//	public JComboBox getCmbPasajeros() {
+//		return cmbPasajeros;
+//	}
+	
+	public JList getListaPasajerosCopia() {
+		return listaPasajerosCopia;
 	}
 
 	public JCheckBox getQuiereAbonoTransporteLocal() {
@@ -312,10 +345,17 @@ public class IngresoView {
 
 			errores.add("localidades");
 		}
-		if(this.cmbPasajeros.getSelectedIndex() <= 0){
+		
+//		if(this.cmbPasajeros.getSelectedIndex() <= 0){
+//
+//			errores.add("pasajero");
+//		}
+		
+		if(this.list2Model.getSize() < 1){
 
-			errores.add("pasajero");
+			errores.add("pasajeros");
 		}
+		
 		if(this.txtFechaSalida.getText().trim().isEmpty()
 				|| this.txtFechaSalida.getText().trim().equals("dd/mm/yyyy")
 				){
@@ -396,4 +436,5 @@ public class IngresoView {
 		GuiUtilities.setearComandoBoton(btnAceptar, "Aceptar", ingresoController);
 
 	}
+
 }
