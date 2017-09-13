@@ -25,6 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import ar.edu.usal.tp9.controller.IngresoController;
+import ar.edu.usal.tp9.model.dao.PasajerosDao;
+import ar.edu.usal.tp9.model.dto.Pasajeros;
 import ar.edu.usal.tp9.utils.Constants;
 import ar.edu.usal.tp9.utils.GuiUtilities;
 import ar.edu.usal.tp9.utils.Validador;
@@ -39,7 +41,7 @@ public class IngresoView {
 	private JScrollPane scrPane2Original;
 	private JButton btn2Agregar = new JButton("Agregar >>");
 	private JButton btn2Quitar = new JButton("<< Quitar");
-	private DefaultListModel list2Model;
+	private DefaultListModel listModelPasajeros;
 	private JList listaPasajerosCopia;
 	private JScrollPane scrPane2Copia;
 	private JPanel pnl2Copia;
@@ -100,20 +102,24 @@ public class IngresoView {
 
 		cmbHorarios = new JComboBox(this.ingresoController.getTurnosFromTxt());
 
-//		cmbPasajeros = new JComboBox(this.ingresoController.getPasajerosFromTxt());
-
 		int opcionSeleccion = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+
+		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+		ArrayList<Pasajeros> pasajerosList = pasajerosDao.getPasajeros();
 		
-		listaPasajerosOriginal = new JList(this.ingresoController.getPasajerosFromTxt());
+		Object[] pasajeros = pasajerosList.toArray();
+
+		listaPasajerosOriginal = new JList(pasajeros);
+
 		GuiUtilities.aplicarFormatoLista(ventana, listaPasajerosOriginal, opcionSeleccion);
 		scrPane2Original = new JScrollPane(listaPasajerosOriginal); 
 
-		GuiUtilities.setearComandoBoton(btn2Agregar, "Agregar", ingresoController);
+		GuiUtilities.setearComandoBoton(btn2Agregar, "AgregarPasajero", ingresoController);
 		GuiUtilities.setearComandoBoton(btn2Quitar, "Quitar", ingresoController);
 
-		list2Model = new DefaultListModel();
+		listModelPasajeros = new DefaultListModel();
 
-		listaPasajerosCopia = new JList(list2Model);
+		listaPasajerosCopia = new JList(listModelPasajeros);
 		GuiUtilities.aplicarFormatoLista(ventana, listaPasajerosCopia, opcionSeleccion);
 		scrPane2Copia = new JScrollPane(listaPasajerosCopia); 
 
@@ -124,7 +130,7 @@ public class IngresoView {
 		GuiUtilities.aplicarFormatoLista(ventana, listaLocalidadesOriginal, opcionSeleccion);
 		scrPaneOriginal = new JScrollPane(listaLocalidadesOriginal); 
 
-		GuiUtilities.setearComandoBoton(btnAgregar, "Agregar", ingresoController);
+		GuiUtilities.setearComandoBoton(btnAgregar, "AgregarLocalidad", ingresoController);
 		GuiUtilities.setearComandoBoton(btnQuitar, "Quitar", ingresoController);
 
 		listModel = new DefaultListModel();
@@ -200,7 +206,7 @@ public class IngresoView {
 		String output =  "dd/mm/yyyy";
 
 //		cmbPasajeros.setSelectedIndex(0);
-		list2Model.removeAllElements();
+		listModelPasajeros.removeAllElements();
 		listaLocalidadesOriginal.clearSelection();
 		listModel.removeAllElements();
 		txtFechaSalida.setText(output);
@@ -252,8 +258,12 @@ public class IngresoView {
 		return listaLocalidadesOriginal;		
 	}
 
-	public DefaultListModel getModelo() {
+	public DefaultListModel getModeloLocalidades() {
 		return listModel;
+	}
+	
+	public DefaultListModel getModeloPasajeros() {
+		return listModelPasajeros;
 	}
 
 	public JFrame getVentana() {
@@ -312,6 +322,18 @@ public class IngresoView {
 		return listaPasajerosCopia;
 	}
 
+	public JButton getBtn2Quitar() {
+		return btn2Quitar;
+	}
+
+	public void setBtn2Quitar(JButton btn2Quitar) {
+		this.btn2Quitar = btn2Quitar;
+	}
+
+	public JList getListaPasajerosOriginal() {
+		return listaPasajerosOriginal;
+	}
+
 	public JCheckBox getQuiereAbonoTransporteLocal() {
 		return quiereAbonoTransporteLocal;
 	}
@@ -351,7 +373,7 @@ public class IngresoView {
 //			errores.add("pasajero");
 //		}
 		
-		if(this.list2Model.getSize() < 1){
+		if(this.listModelPasajeros.getSize() < 1){
 
 			errores.add("pasajeros");
 		}

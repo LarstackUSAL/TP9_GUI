@@ -69,21 +69,30 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 				
 				this.ingresoView.mostrarMensajeDialog("Se ha verificado un error de persistencia.", "ERROR");
 			}
-		} else if ("Agregar".equals(e.getActionCommand())) {
+		} else if ("AgregarPasajero".equals(e.getActionCommand())) {
+			
+			ArrayList<Object> elementosSeleccionados = (ArrayList<Object>) ingresoView.getListaPasajerosOriginal().getSelectedValuesList();
+			for(Object elemSelec : elementosSeleccionados){
+				
+				if(!(ingresoView.getModeloPasajeros().contains(((Pasajeros) elemSelec))))
+					ingresoView.getModeloPasajeros().addElement((Pasajeros) elemSelec);
+			}
+		
+		} else if ("AgregarLocalidad".equals(e.getActionCommand())) {
 			
 			ArrayList<Object> elementosSeleccionados = (ArrayList<Object>) ingresoView.getListaLocalidadesOriginal().getSelectedValuesList();
 			for(Object elemSelec : elementosSeleccionados){
 				
-				if(!(ingresoView.getModelo().contains(((String) elemSelec))))
-					ingresoView.getModelo().addElement((String) elemSelec);
+				if(!(ingresoView.getModeloLocalidades().contains(((String) elemSelec))))
+					ingresoView.getModeloLocalidades().addElement((String) elemSelec);
 			}
 		
-		} else if ("Quitar".equals(e.getActionCommand())) {
+		}else if ("Quitar".equals(e.getActionCommand())) {
 			
 			int[] elementosSeleccionados = ingresoView.getListaLocalidadesCopia().getSelectedIndices();
 			
 			for(int i = elementosSeleccionados.length-1; i>=0; i--)
-				ingresoView.getModelo().remove(elementosSeleccionados[i]);
+				ingresoView.getModeloLocalidades().remove(elementosSeleccionados[i]);
 		
 		} else if ("Si".equals(e.getActionCommand())) {
 						
@@ -172,8 +181,8 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 //		paquete.setPasajero(pasajero);
 		
 		ArrayList<Pasajeros> pasajeros = new ArrayList<Pasajeros>(); 
-		ListModel model2 = this.ingresoView.getListaPasajerosCopia().getModel();
-		for (int i = 0; i < model2.getSize(); i++) {
+		ListModel modelPasajeros = this.ingresoView.getListaPasajerosCopia().getModel();
+		for (int i = 0; i < modelPasajeros.getSize(); i++) {
 			
 			pasajeros.add((Pasajeros) model.getElementAt(i));
 		}
@@ -252,7 +261,7 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 		
 		TablasMaestrasDao tablasMaestrasDao = TablasMaestrasDao.getInstance();
 		HashMap<String, Double> localidadesImportesMap = tablasMaestrasDao.getLocalidadesImportesMap();
-		ListModel modelo = this.ingresoView.getModelo();
+		ListModel modelo = this.ingresoView.getModeloLocalidades();
 		
 		ArrayList<String> localidadesSeleccionadas = new ArrayList<String>();
 		
@@ -304,7 +313,7 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 			
 		}		
 		
-		return importeTotal;
+		return (importeTotal * this.ingresoView.getListaPasajerosOriginal().getModel().getSize());
 		
 	}
 }
