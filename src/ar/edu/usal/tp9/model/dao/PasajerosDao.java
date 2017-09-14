@@ -97,6 +97,23 @@ public class PasajerosDao {
 		
 		return null;
 	}
+	
+	public Pasajeros getPasajeroByDocumento(int pasajeroDocumento) {
+
+		Iterator pasajerosIterator = this.pasajeros.iterator();
+		
+		while (pasajerosIterator.hasNext()) {
+			
+			Pasajeros pasajero = (Pasajeros) pasajerosIterator.next();
+			
+			if(pasajero.getDni() == pasajeroDocumento){
+				
+				return pasajero;
+			}
+		}
+		
+		return null;
+	}
 
 	public Pasajeros buscarPasajero(String pasajeroBuscado) {
 

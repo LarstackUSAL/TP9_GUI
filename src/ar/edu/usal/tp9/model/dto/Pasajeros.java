@@ -52,4 +52,9 @@ public class Pasajeros {
 		this.email = email;
 	}
 
+	@Override
+	public String toString() {
+		
+		return this.getNombreApellido();
+	}
 }

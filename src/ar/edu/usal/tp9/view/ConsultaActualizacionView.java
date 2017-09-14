@@ -25,16 +25,14 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import ar.edu.usal.tp9.controller.ConsultaActualizacionController;
+import ar.edu.usal.tp9.model.dao.PasajerosDao;
+import ar.edu.usal.tp9.model.dto.Pasajeros;
 import ar.edu.usal.tp9.utils.Constants;
 import ar.edu.usal.tp9.utils.GuiUtilities;
-import ar.edu.usal.tp9.utils.Validador;
 
 public class ConsultaActualizacionView {
 	
 	private JFrame ventana = new JFrame("Consulta y actualizacion");
-	
-	private JLabel lblPasajero = new JLabel("Seleccionar pasajero: ");
-	private JComboBox cmbPasajeros;
 	
 	private JLabel lblLocalidades = new JLabel("Seleccionar localidad: ");
 	private JComboBox cmbLocalidades;
@@ -45,8 +43,26 @@ public class ConsultaActualizacionView {
 	private JButton btnAceptar =  new JButton("Calcular Importe");
 	private JButton btnCancelar =  new JButton("Cancelar");
 	
-	private JLabel lblPasajeroPaquete = new JLabel("Pasajero: ");
-	private JComboBox cmbPasajerosPaquete;
+//	private JLabel lblPasajeroPaquete = new JLabel("Pasajero: ");
+//	private JComboBox cmbPasajerosPaquete;
+	
+	///////////////  20170913
+	
+	private JLabel lblPasajero = new JLabel("Pasajero: ");
+	private JComboBox cmbPasajeros;
+
+	private JLabel lblPasajeroPaquete = new JLabel("Pasajeros: ");
+
+	private JList listaPasajerosOriginal;
+	private JScrollPane scrPane2Original;
+	private JButton btn2Agregar = new JButton("Agregar >>");
+	private JButton btn2Quitar = new JButton("<< Quitar");
+	private DefaultListModel listModelPasajeros;
+	private JList listaPasajerosCopia;
+	private JScrollPane scrPane2Copia;
+	private JPanel pnl2Copia;
+	
+	//////////////
 	
 	private JLabel lblLocalidadesPaquete = new JLabel("Localidades: ");
 	private JList listaLocalidadesOriginal;
@@ -106,8 +122,13 @@ public class ConsultaActualizacionView {
 		
 		cmbHorarios = new JComboBox(this.consultaActualizacionController.getTurnosFromTxt());
 
-		cmbPasajeros = new JComboBox(this.consultaActualizacionController.getPasajerosFromTxt());
+		///////////
+		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+		ArrayList<Pasajeros> pasajerosList = pasajerosDao.getPasajeros();
 		
+		Object[] pasajeros = pasajerosList.toArray();
+		cmbPasajeros = new JComboBox(pasajeros);
+
 		cmbLocalidades = new JComboBox(this.consultaActualizacionController.getLocalidadesFromTxt());
 		
 		GuiUtilities.setearComandoBoton(btnConsultar, "Consultar", consultaActualizacionController);
@@ -121,16 +142,35 @@ public class ConsultaActualizacionView {
 		
 		ocultarVisibilizarBotonesVentana(false);
 
-		cmbPasajerosPaquete = new JComboBox(this.consultaActualizacionController.getPasajerosFromTxt());
+//		cmbPasajerosPaquete = new JComboBox(this.consultaActualizacionController.getPasajerosFromTxt());
+		
+ 		int opcionSeleccion = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
-		int opcionSeleccion = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+		/////////////////////////////////
+
+		listaPasajerosOriginal = new JList(pasajeros);		
+		GuiUtilities.aplicarFormatoLista(ventana, listaPasajerosOriginal, opcionSeleccion);
+		scrPane2Original = new JScrollPane(listaPasajerosOriginal); 
+
+		GuiUtilities.setearComandoBoton(btn2Agregar, "AgregarPasajero", consultaActualizacionController);
+		GuiUtilities.setearComandoBoton(btn2Quitar, "QuitarPasajero", consultaActualizacionController);
+		
+		listModelPasajeros = new DefaultListModel();
+		
+		listaPasajerosCopia = new JList(listModelPasajeros);
+		GuiUtilities.aplicarFormatoLista(ventana, listaPasajerosCopia, opcionSeleccion);
+		scrPane2Copia = new JScrollPane(listaPasajerosCopia); 
+		
+		pnl2Copia = new JPanel();
+		GuiUtilities.aplicarFormatoPanel(ventana, pnl2Copia, listaPasajerosOriginal, listaPasajerosCopia);
+		/////////////////////////////////
 		
 		listaLocalidadesOriginal = new JList(this.consultaActualizacionController.getLocalidadesFromTxt());
 		GuiUtilities.aplicarFormatoLista(ventana, listaLocalidadesOriginal, opcionSeleccion);
 		scrPaneOriginal = new JScrollPane(listaLocalidadesOriginal); 
 
-		GuiUtilities.setearComandoBoton(btnAgregar, "Agregar", consultaActualizacionController);
-		GuiUtilities.setearComandoBoton(btnQuitar, "Quitar", consultaActualizacionController);
+		GuiUtilities.setearComandoBoton(btnAgregar, "AgregarLocalidad", consultaActualizacionController);
+		GuiUtilities.setearComandoBoton(btnQuitar, "QuitarLocalidad", consultaActualizacionController);
 
 		listModel = new DefaultListModel();
 		
@@ -184,7 +224,8 @@ public class ConsultaActualizacionView {
 		GuiUtilities.setearComandoBoton(btnAceptar, "Calcular", consultaActualizacionController);
 		GuiUtilities.setearComandoBoton(btnCancelar, "Cancelar", consultaActualizacionController);
 		
-		Component[] componentesPaqueteArray = {lblPasajeroPaquete, cmbPasajerosPaquete, lblLocalidadesPaquete, 
+		Component[] componentesPaqueteArray = {lblPasajeroPaquete, scrPane2Original, btn2Agregar, btn2Quitar, 
+				pnl2Copia, scrPane2Copia, lblLocalidadesPaquete, 
 				scrPaneOriginal, btnAgregar, btnQuitar, pnlCopia, scrPaneCopia, lblFechaSalida, txtFechaSalida, 
 				lblHorarioSalida, cmbHorarios, cmbHoras, lblCantidadDias, txtCantidadDias, lblSeguro, 
 				rdbOcultoSeguro, rdbSi, rdbNo, leyenda, quiereAbonoTransporteLocal, quiereVisitasGuiadas, 
@@ -241,7 +282,7 @@ public class ConsultaActualizacionView {
 		return cmbLocalidades;
 	}
 
-	public void fillForm(String nombreApellido, Object[] localidades,
+	public void fillForm(Object[] pasajeros, Object[] documentosList, Object[] localidades,
 			String fecha, String hora,
 			boolean tieneSeguro, boolean quiereAbonoTransporteLocal2,
 			boolean quiereVisitasGuiadas2, String hotel, boolean pensionCompleta, String importe) {
@@ -251,7 +292,13 @@ public class ConsultaActualizacionView {
 			this.listModel.addElement((String)localidades[i]);
 		}
 		
-		cmbPasajerosPaquete.setSelectedItem(nombreApellido);
+//		cmbPasajerosPaquete.setSelectedItem(nombreApellido);
+		
+		for (int i = 0; i < pasajeros.length; i++) {
+			
+			this.listModelPasajeros.addElement(pasajeros[i]);
+		}
+
 		txtFechaSalida.setText(fecha);
 		cmbHoras.setSelectedItem(hora);
 		cmbHorarios.setSelectedItem(this.getTurnoByHora(hora));
@@ -304,8 +351,9 @@ public class ConsultaActualizacionView {
 
 			errores.add("localidades");
 		}
-		if(this.cmbPasajeros.getSelectedIndex() <= 0){
-
+//		if(this.cmbPasajeros.getSelectedIndex() <= 0){
+		if(this.listModelPasajeros.getSize() < 1){
+			
 			errores.add("pasajero");
 		}
 		if(this.txtFechaSalida.getText().trim().isEmpty()
@@ -386,7 +434,8 @@ public class ConsultaActualizacionView {
 		
 		String output =  "dd/mm/yyyy";
 		
-		cmbPasajerosPaquete.setSelectedIndex(0);
+//		cmbPasajerosPaquete.setSelectedIndex(0);
+		listModelPasajeros.removeAllElements();
 		listaLocalidadesOriginal.clearSelection();
 		listModel.removeAllElements();
 		txtFechaSalida.setText(output);
@@ -406,6 +455,9 @@ public class ConsultaActualizacionView {
 	public void habilitarCampos(boolean b) {
 
 		cmbPasajeros.setEnabled(b);
+		
+		listaPasajerosOriginal.setEnabled(b);
+		listaPasajerosCopia.setEnabled(b);
 		listaLocalidadesOriginal.setEnabled(b);
 		listaLocalidadesCopia.setEnabled(b);
 		txtFechaSalida.setEnabled(b);
@@ -476,8 +528,8 @@ public class ConsultaActualizacionView {
 		return txtFechaSalida;
 	}
 
-	public JComboBox getCmbPasajerosPaquete() {
-		return cmbPasajerosPaquete;
+	public JList getListaPasajerosCopia() {
+		return listaPasajerosCopia;
 	}
 
 	public JCheckBox getQuiereAbonoTransporteLocal() {

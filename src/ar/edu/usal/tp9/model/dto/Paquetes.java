@@ -92,7 +92,6 @@ public class Paquetes {
 		this.factura.setNumero(FacturasDao.getNextIdFactura());
 		this.factura.setFecha(Calendar.getInstance());
 		this.factura.setImporte(this.importe);
-//		this.factura.setPasajero(this.pasajero);
 		this.factura.setTipo(Constants.TIPO_FACTURA);
 		
 	}

@@ -115,7 +115,7 @@ public class IngresoView {
 		scrPane2Original = new JScrollPane(listaPasajerosOriginal); 
 
 		GuiUtilities.setearComandoBoton(btn2Agregar, "AgregarPasajero", ingresoController);
-		GuiUtilities.setearComandoBoton(btn2Quitar, "Quitar", ingresoController);
+		GuiUtilities.setearComandoBoton(btn2Quitar, "QuitarPasajero", ingresoController);
 
 		listModelPasajeros = new DefaultListModel();
 
@@ -131,7 +131,7 @@ public class IngresoView {
 		scrPaneOriginal = new JScrollPane(listaLocalidadesOriginal); 
 
 		GuiUtilities.setearComandoBoton(btnAgregar, "AgregarLocalidad", ingresoController);
-		GuiUtilities.setearComandoBoton(btnQuitar, "Quitar", ingresoController);
+		GuiUtilities.setearComandoBoton(btnQuitar, "QuitarLocalidad", ingresoController);
 
 		listModel = new DefaultListModel();
 

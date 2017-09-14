@@ -87,7 +87,14 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 					ingresoView.getModeloLocalidades().addElement((String) elemSelec);
 			}
 		
-		}else if ("Quitar".equals(e.getActionCommand())) {
+		}else if ("QuitarPasajero".equals(e.getActionCommand())) {
+			
+			int[] elementosSeleccionados = ingresoView.getListaPasajerosCopia().getSelectedIndices();
+			
+			for(int i = elementosSeleccionados.length-1; i>=0; i--)
+				ingresoView.getModeloPasajeros().remove(elementosSeleccionados[i]);
+		
+		} else if ("QuitarLocalidad".equals(e.getActionCommand())) {
 			
 			int[] elementosSeleccionados = ingresoView.getListaLocalidadesCopia().getSelectedIndices();
 			
@@ -184,7 +191,7 @@ public class IngresoController implements ActionListener, ICalculoImporte {
 		ListModel modelPasajeros = this.ingresoView.getListaPasajerosCopia().getModel();
 		for (int i = 0; i < modelPasajeros.getSize(); i++) {
 			
-			pasajeros.add((Pasajeros) model.getElementAt(i));
+			pasajeros.add((Pasajeros) modelPasajeros.getElementAt(i));
 		}
 		
 		paquete.setPasajeros(pasajeros);

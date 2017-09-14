@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
@@ -34,21 +35,54 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 		
 	}
 	
-	public Object[] getPasajerosFromTxt() {
+	
+//	public ArrayList<Pasajeros> getPasajerosFromTxt() {
+//
+//		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+//		Iterator it = pasajerosDao.getPasajeros().iterator();
+//		
+////		ArrayList<String> nombresPasajeros = new ArrayList<String>();
+////		ArrayList<Integer> documentosPasajeros = new ArrayList<Integer>();
+////		nombresPasajeros.add("Seleccionar");
+//		
+//		while (it.hasNext()) {
+//		
+//			Pasajeros pasajeroTmp = ((Pasajeros) it.next());
+//			
+//			nombresPasajeros.add(pasajeroTmp.getNombreApellido());
+//			documentosPasajeros.add(pasajeroTmp.getDni());			
+//		}
+//		
+//		ArrayList listaDatosPasajeros = new ArrayList<>();
+//		listaDatosPasajeros.add(nombresPasajeros);
+//		listaDatosPasajeros.add(documentosPasajeros);
+//		
+//		return listaDatosPasajeros;		
+//	}
+	
+	//LR cafe Martinez
+	public ArrayList getPasajerosListasFromTxt() {
 
 		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
 		Iterator it = pasajerosDao.getPasajeros().iterator();
 		
 		ArrayList<String> nombresPasajeros = new ArrayList<String>();
+		ArrayList<Integer> documentosPasajeros = new ArrayList<Integer>();
 		nombresPasajeros.add("Seleccionar");
 		
 		while (it.hasNext()) {
 		
-			nombresPasajeros.add(((Pasajeros) it.next()).getNombreApellido());
+			Pasajeros pasajeroTmp = ((Pasajeros) it.next());
 			
+			nombresPasajeros.add(pasajeroTmp.getNombreApellido());
+			documentosPasajeros.add(pasajeroTmp.getDni());			
 		}
 		
-		return nombresPasajeros.toArray();
+		ArrayList listaDatosPasajeros = new ArrayList<>();
+		listaDatosPasajeros.add(nombresPasajeros);
+		listaDatosPasajeros.add(documentosPasajeros);
+		
+		return listaDatosPasajeros;		
 	}
 	
 	public Object[] getLocalidadesFromTxt() {
@@ -64,9 +98,8 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 
 		if ("Consultar".equals(e.getActionCommand())) {
 			
-			String pasajeroString = ((String) this.consultaActualizacionView.getCmbPasajeros().getSelectedItem()).trim();
 			PasajerosDao pasajerosDao = PasajerosDao.getInstance();
-			Pasajeros pasajero = pasajerosDao.getPasajeroByNombre(pasajeroString);
+			Pasajeros pasajero = (Pasajeros) this.consultaActualizacionView.getCmbPasajeros().getSelectedItem();
 			
 			String localidadString = ((String) this.consultaActualizacionView.getCmbLocalidades().getSelectedItem()).trim();
 			
@@ -85,9 +118,20 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 					pensionCompleta = ((PaquetesConEstadias)paqueteEncontrado).isEsPensionCompleta();
 				}
 				
+				ArrayList<String> nombresPasajerosPaquete = new ArrayList<String>(); 
+				ArrayList<Integer> documentosPasajerosPaquete = new ArrayList<Integer>();
+
+				ArrayList<Pasajeros> pasajerosTmp = paqueteEncontrado.getPasajeros();
+//				for (int i = 0; i < pasajerosTmp.size(); i++) {
+//					
+//					nombresPasajerosPaquete.add(pasajerosTmp.get(i).getNombreApellido());
+//					documentosPasajerosPaquete.add(pasajerosTmp.get(i).getDni());
+//				}
+				
 				this.consultaActualizacionView.setIdPaqueteEncontrado(paqueteEncontrado.getId());
 				this.consultaActualizacionView.fillForm(
-						paqueteEncontrado.getPasajero().getNombreApellido(),
+						pasajerosTmp.toArray(),
+						documentosPasajerosPaquete.toArray(),
 						paqueteEncontrado.getLocalidades().toArray(),
 						Validador.calendarToString(paqueteEncontrado.getFechaHoraSalida(), "dd/MM/yyyy"),
 						Validador.HoraCalendarToString(paqueteEncontrado.getFechaHoraSalida()),
@@ -211,8 +255,18 @@ public class ConsultaActualizacionController implements ActionListener, ICalculo
 		paquete.setLocalidades(localidades);
 		
 		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
-		Pasajeros pasajero = pasajerosDao.getPasajeroByNombre((String)(this.consultaActualizacionView.getCmbPasajerosPaquete().getSelectedItem()));
-		paquete.setPasajero(pasajero);
+//		Pasajeros pasajero = this.consultaActualizacionView.getCmbPasajerosPaquete().getSelectedItem()));
+				
+//		paquete.setPasajeros(pasajeros);
+		
+		ArrayList<Pasajeros> pasajeros = new ArrayList<Pasajeros>(); 
+		ListModel modelPasajeros = this.consultaActualizacionView.getListaPasajerosCopia().getModel();
+		for (int i = 0; i < modelPasajeros.getSize(); i++) {
+			
+			pasajeros.add((Pasajeros) modelPasajeros.getElementAt(i));
+		}
+		
+		paquete.setPasajeros(pasajeros);
 		
 		paquete.setQuiereAbonoTransporteLocal(this.consultaActualizacionView.getQuiereAbonoTransporteLocal().isSelected());
 		paquete.setQuiereVisitasGuiadas(this.consultaActualizacionView.getQuiereVisitasGuiadas().isSelected());

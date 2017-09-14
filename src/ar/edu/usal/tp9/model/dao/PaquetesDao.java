@@ -82,36 +82,34 @@ public class PaquetesDao {
 				//importe
 				double importe = Double.parseDouble(lineaArray[3].trim());
 
-				//pasajero
-//				PasajerosDao pasajerosDao = PasajerosDao.getInstance();
-//				Pasajeros pasajero = pasajerosDao.getPasajeroByNombre(lineaArray[4].trim());
+				//pasajeros
 				ArrayList<Pasajeros> pasajeros = this.loadPasajeros(idPaquete);
 
 				//abono transporte local
-				boolean quiereAbonoTransporteLocal = Boolean.parseBoolean(lineaArray[5].trim());
+				boolean quiereAbonoTransporteLocal = Boolean.parseBoolean(lineaArray[4].trim());
 
 				//visitas guiadas
-				boolean quiereVisitasGuiadas = Boolean.parseBoolean(lineaArray[6].trim());
+				boolean quiereVisitasGuiadas = Boolean.parseBoolean(lineaArray[5].trim());
 
 				//seguro
-				boolean tieneSeguro = Boolean.parseBoolean(lineaArray[7].trim());
+				boolean tieneSeguro = Boolean.parseBoolean(lineaArray[6].trim());
 
 				//localidades
 				ArrayList<String> localidades = this.loadLocalidades(idPaquete);
 
 				//cantidad dias
-				int cantidadDias = Integer.valueOf(lineaArray[8].trim());
+				int cantidadDias = Integer.valueOf(lineaArray[9].trim());
 
 				//hotel
 				Hoteles hotel = null;
 				boolean esPensionCompleta = false;
 				HotelesDao hotelesDao = HotelesDao.getInstance();
-				if(lineaArray[9] != null){
+				if(lineaArray[10] != null){
 
 					hotel = hotelesDao.getHotelByNombre(lineaArray[9].trim());
 
 					//pension completa
-					esPensionCompleta = Boolean.parseBoolean(lineaArray[10].trim());
+					esPensionCompleta = Boolean.parseBoolean(lineaArray[11].trim());
 
 					paquete = new PaquetesConEstadias();
 					((PaquetesConEstadias)paquete).setHotel(hotel);
@@ -144,6 +142,58 @@ public class PaquetesDao {
 
 			System.out.println("No se ha encontrado el archivo.");
 		}
+	}
+
+	private ArrayList<Pasajeros> loadPasajeros(int idPaquete) {
+		
+		File pasajerosTxt = new File("./archivos/PAQUETES_PASAJEROS.txt");
+		Scanner pasajerosScanner;
+		PasajerosDao pasajerosDao = PasajerosDao.getInstance();
+		
+		ArrayList<Pasajeros> pasajerosPaqueteList = new ArrayList<>();
+
+		try {
+
+			try {
+				pasajerosTxt.createNewFile();
+
+			} catch (IOException e) {
+
+				System.out.println("Se ha verificado un error al cargar el archivo de pasajeros.");
+			}
+
+			pasajerosScanner = new Scanner(pasajerosTxt);
+
+			while(pasajerosScanner.hasNextLine()){
+
+				String lineaPaquetePasajeros = pasajerosScanner.nextLine().trim();
+				String[] arrayPaquetePasajeros = lineaPaquetePasajeros.split(";");
+
+				if(Integer.parseInt(arrayPaquetePasajeros[0].trim()) == idPaquete){
+
+					for (int i = 1; i < arrayPaquetePasajeros.length; i++) {
+
+						int dni = Integer.parseInt(arrayPaquetePasajeros[i].trim());
+						
+						pasajerosPaqueteList.add(pasajerosDao.getPasajeroByDocumento(dni));
+					}
+
+					break;
+				}
+			}
+
+			pasajerosScanner.close();
+
+		}catch(InputMismatchException e){
+
+			System.out.println("Se ha encontrado un tipo de dato insesperado.");
+
+		}catch (FileNotFoundException e) {
+
+			System.out.println("No se ha encontrado el archivo.");
+		}
+
+		return pasajerosPaqueteList;
 	}
 
 	private ArrayList<String> loadLocalidades(int idPaquete) {
@@ -205,6 +255,9 @@ public class PaquetesDao {
 		FileWriter localidadesPaquetesFile;
 		PrintWriter localidadesPaquetesOut;
 
+		FileWriter pasajerosPaquetesFile;
+		PrintWriter pasajerosPaquetesOut;
+
 		FileWriter facturasFile;
 		PrintWriter facturasOut;
 
@@ -216,6 +269,9 @@ public class PaquetesDao {
 			localidadesPaquetesFile = new FileWriter("./archivos/PAQUETES_LOCALIDADES.txt");
 			localidadesPaquetesOut = new PrintWriter(localidadesPaquetesFile);
 
+			pasajerosPaquetesFile = new FileWriter("./archivos/PAQUETES_PASAJEROS.txt");
+			pasajerosPaquetesOut = new PrintWriter(pasajerosPaquetesFile);
+			
 			facturasFile = new FileWriter("./archivos/FACTURAS.txt");
 			facturasOut = new PrintWriter(facturasFile);
 
@@ -231,7 +287,7 @@ public class PaquetesDao {
 								fecha + ";" +
 								hora + ";" +
 								String.valueOf(paquete.getImporte()) + ";" +
-								paquete.getPasajero().getNombreApellido().trim() + ";" +
+//								paquete.getPasajeros().getNombreApellido().trim() + ";" +
 								String.valueOf(paquete.isQuiereAbonoTransporteLocal())+ ";" +
 								String.valueOf(paquete.isQuiereVisitasGuiadas())+ ";" +
 								String.valueOf(paquete.isTieneSeguro())+ ";" +
@@ -255,13 +311,24 @@ public class PaquetesDao {
 
 				//Se actualiza el archivo de localidades del paquete.
 				localidadesPaquetesOut.println(localidades);
+				
+				//PASAJEROS
+				String pasajeros = String.valueOf(paquete.getId());
 
+				for (int j = 0; j < paquete.getPasajeros().size(); j++) {
+
+					pasajeros += ";";
+					pasajeros += String.valueOf(paquete.getPasajeros().get(j).getDni());
+				}
+
+				//Se actualiza el archivo de localidades del paquete.
+				pasajerosPaquetesOut.println(pasajeros);
+				
 				//Se actualiza el archivo de facturas.
 				facturasOut.println(
 						String.valueOf(paquete.getFacturas().getNumero()) + ";" +
 								String.valueOf(paquete.getId()) + ";" +
 								Validador.calendarToString(paquete.getFacturas().getFecha(), "dd/MM/yyyy") + ";" +
-//								paquete.getFacturas().getPasajero().getNombreApellido() + ";" +
 								String.valueOf(paquete.getFacturas().getTipo()) + ";" +
 								String.valueOf(paquete.getFacturas().getImporte())
 						);				
@@ -271,6 +338,8 @@ public class PaquetesDao {
 			facturasFile.close();			
 			localidadesPaquetesOut.close();
 			localidadesPaquetesFile.close();
+			pasajerosPaquetesOut.close();
+			pasajerosPaquetesFile.close();
 			paquetesOut.close();
 			paquetesFile.close();
 
@@ -375,17 +444,23 @@ public class PaquetesDao {
 		for (int i = 0; i < this.paquetes.size(); i++) {
 
 			ArrayList<String> localidades = paquetes.get(i).getLocalidades();
-			Pasajeros pasajeroIterado = paquetes.get(i).getPasajero();  
+			ArrayList<Pasajeros> pasajerosIterados = paquetes.get(i).getPasajeros();  
 
-			if(pasajeroIterado == pasajero){
+			for (int k = 0; k < pasajerosIterados.size(); k++) {
 
-				for (int j = 0; j < localidades.size(); j++) {
+				Pasajeros pasajeroIterado = paquetes.get(i).getPasajeros().get(k);  
 
-					if(localidades.get(j).equals(localidadString)){
+				if(pasajeroIterado == pasajero){
 
-						return paquetes.get(i);
+					for (int j = 0; j < localidades.size(); j++) {
+
+						if(localidades.get(j).equals(localidadString)){
+
+							return paquetes.get(i);
+						}
 					}
 				}
+				
 			}
 		}
 
@@ -398,13 +473,19 @@ public class PaquetesDao {
 
 		for (int i = 0; i < this.paquetes.size(); i++) {
 
-			Pasajeros pasajeroIterado = paquetes.get(i).getPasajero();  
+			ArrayList<Pasajeros> pasajerosIterados = paquetes.get(i).getPasajeros();  
 
-			if(pasajeroIterado == pasajero){
+			for (int j = 0; j < pasajerosIterados.size(); j++) {
+				
+				Pasajeros pasajeroIterado = paquetes.get(i).getPasajeros().get(j);  
 
-				paquetesArray.add(paquetes.get(i));
+				if(pasajeroIterado == pasajero){
 
+					paquetesArray.add(paquetes.get(i));
+
+				}
 			}
+
 		}
 
 		return paquetesArray;

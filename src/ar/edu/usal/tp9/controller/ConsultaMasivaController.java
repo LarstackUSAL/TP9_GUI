@@ -61,7 +61,8 @@ public class ConsultaMasivaController implements ActionListener {
 						}
 
 						String[] registro = {
-								paqueteIterado.getPasajero().getNombreApellido().trim(),					
+//								lr
+//								paqueteIterado.getPasajero().getNombreApellido().trim(),					
 								Validador.ListToString(paqueteIterado.getLocalidades()),
 								Validador.calendarToString(paqueteIterado.getFechaHoraSalida(), "dd/MM/yyyy"),
 								String.valueOf(paqueteIterado.getCantidadDias()),
@@ -94,7 +95,8 @@ public class ConsultaMasivaController implements ActionListener {
 					}
 
 					String[] registro = {
-							paqueteIterado.getPasajero().getNombreApellido().trim(),					
+//							lr
+//							paqueteIterado.getPasajero().getNombreApellido().trim(),					
 							Validador.ListToString(paqueteIterado.getLocalidades()),
 							Validador.calendarToString(paqueteIterado.getFechaHoraSalida(), "dd/MM/yyyy"),
 							String.valueOf(paqueteIterado.getCantidadDias()),
