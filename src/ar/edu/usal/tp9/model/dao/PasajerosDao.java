@@ -115,7 +115,7 @@ public class PasajerosDao {
 		return null;
 	}
 
-	public Pasajeros buscarPasajero(String pasajeroBuscado) {
+	public Pasajeros buscarPasajeroByNombre(String pasajeroBuscado) {
 
 		for (int i = 0; i < this.pasajeros.size(); i++) {
 			

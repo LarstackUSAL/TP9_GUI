@@ -121,5 +121,4 @@ public class ConsultaMasivaView {
 		this.contadorRegBusqueda.setText(cantidadRegistros);
 		this.contadorRegTotal.setText(cantidadRegistrosTotales);
 	}
-
 }
